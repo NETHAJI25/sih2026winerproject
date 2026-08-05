@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Civic Issue Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+// Firebase config
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "blogapp-bd46d.firebaseapp.com",
+  databaseURL: "https://blogapp-bd46d-default-rtdb.firebaseio.com/",
+  projectId: "blogapp-bd46d",
+  storageBucket: "blogapp-bd46d.appspot.com",
+  messagingSenderId: "SENDER_ID",
+  appId: "APP_ID"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+// DOM Elements
+const tableBody = document.getElementById("complaints-table");
+
+// Fetch all reports for all users
+const reportsRef = ref(db, `blogs/reports`);
+
+onValue(reportsRef, snapshot => {
+  tableBody.innerHTML = "";
+
+  snapshot.forEach(userSnap => {
+    const userId = userSnap.key;
+
+    // Each user may have multiple reports
+    userSnap.forEach(reportSnap => {
+      const r = reportSnap.val();
+
+      // Media preview
+      let mediaPreview = "No Media";
+      if (r.media && Array.isArray(r.media) && r.media.length > 0) {
+        mediaPreview = r.media.map(url => {
+          if (url.endsWith(".mp4")) {
+            return `<video width="120" height="80" controls><source src="${url}" type="video/mp4"></video>`;
+          } else {
+            return `<img src="${url}" width="100" height="80" style="object-fit:cover; margin-right:5px;">`;
+          }
+        }).join(" ");
+      }
+
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${reportSnap.key}</td>
+        <td>${r.issue || "N/A"}</td>
+        <td>${r.location || "N/A"}</td>
+        <td>${r.date || "N/A"}</td>
+        <td>${mediaPreview}</td>
+        <td><a href="report.html?userId=${userId}" target="_blank">View</a></td>
+      `;
+      tableBody.appendChild(tr);
+    });
+  });
+});
+</script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Roboto',sans-serif;}
+body{background:#f4f6f8;padding:20px;}
+h2{margin-bottom:20px;}
+table{width:100%;border-collapse:collapse;background:#fff;margin-top:20px;border-radius:8px;overflow:hidden;box-shadow:0 2px 6px rgba(0,0,0,0.1);}
+table thead{background:#1976d2;color:#fff;}
+table th, table td{padding:12px;text-align:left;vertical-align:top;}
+table tbody tr:nth-child(even){background:#f9f9f9;}
+img,video{border-radius:5px;margin-right:5px;}
+a{color:#1976d2;text-decoration:none;font-weight:bold;}
+a:hover{text-decoration:underline;}
+</style>
+</head>
+<body>
+
+<h2>All User Reports</h2>
+
+<table>
+<thead>
+<tr>
+<th>ID</th>
+<th>Issue</th>
+<th>Location</th>
+<th>Date</th>
+<th>Media</th>
+<th>View</th>
+</tr>
+</thead>
+<tbody id="complaints-table"></tbody>
+</table>
+
+</body>
+</html>

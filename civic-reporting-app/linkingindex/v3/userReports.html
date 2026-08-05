@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>User Reports</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h2>User Reports</h2>
+  <div id="reports"></div>
+  <br>
+  <a href="index.html">⬅ Back to Dashboard</a>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "blogapp-bd46d.firebaseapp.com",
+      databaseURL: "https://blogapp-bd46d-default-rtdb.firebaseio.com/",
+      projectId: "blogapp-bd46d",
+      storageBucket: "blogapp-bd46d.appspot.com",
+      messagingSenderId: "SENDER_ID",
+      appId: "APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Get userId from URL
+    const params = new URLSearchParams(window.location.search);
+    const userId = params.get("userId");
+
+    const reportsDiv = document.getElementById("reports");
+
+    if (userId) {
+      const reportsRef = ref(db, "blogs/reports");
+      onValue(reportsRef, (snapshot) => {
+        reportsDiv.innerHTML = `<h3>Reports by User: ${userId}</h3>`;
+        if (!snapshot.exists()) {
+          reportsDiv.innerHTML += `<p>No reports found</p>`;
+          return;
+        }
+
+        snapshot.forEach((childSnapshot) => {
+          const report = childSnapshot.val();
+          if (report.userId === userId) {
+            reportsDiv.innerHTML += `
+              <div style="border:1px solid #ccc; padding:10px; margin:10px;">
+                <p><b>ID:</b> ${childSnapshot.key}</p>
+                <p><b>Issue:</b> ${report.description || "No issue"}</p>
+                <p><b>Status:</b> ${report.status || "Pending"}</p>
+                <p><b>Location:</b> ${report.location || "N/A"}</p>
+                <p><b>Date:</b> ${report.submitDate || "N/A"}</p>
+              </div>
+            `;
+          }
+        });
+      });
+    }
+  </script>
+</body>
+</html>

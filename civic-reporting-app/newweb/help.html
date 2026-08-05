@@ -1,0 +1,51 @@
+<table>
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Issue</th>
+      <th>Officer</th>
+      <th>Status</th>
+      <th>Location</th>
+      <th>Date</th>
+      <th>Media</th>
+    </tr>
+  </thead>
+  <tbody id="help-table"></tbody>
+</table>
+
+<script type="module">
+import { db } from "./firebase-config.js";
+import { ref, onValue } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+const tableBody = document.getElementById("help-table");
+
+const reportsRef = ref(db, "reports");
+onValue(reportsRef, (snapshot) => {
+  tableBody.innerHTML = "";
+  snapshot.forEach((child) => {
+    const r = child.val();
+    // Only resolved or completed issues
+    if(r.status === "Resolved"){
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${child.key}</td>
+        <td>${r.description || "No issue"}</td>
+        <td>${r.username || "Unknown"}</td>
+        <td>${r.status}</td>
+        <td>${r.location || "N/A"}</td>
+        <td>${r.submitDate || "N/A"}</td>
+        <td>
+          ${r.media ? r.media.map(url => {
+            if(url.endsWith('.mp4')){
+              return `<video width="100" height="60" controls><source src="${url}" type="video/mp4"></video>`;
+            } else {
+              return `<img src="${url}" width="60" height="60" style="object-fit:cover;">`;
+            }
+          }).join('') : 'No Media'}
+        </td>
+      `;
+      tableBody.appendChild(tr);
+    }
+  });
+});
+</script>

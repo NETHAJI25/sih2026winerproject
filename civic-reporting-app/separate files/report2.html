@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Report Details</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .report-container { background:#fff; padding:20px; border-radius:8px; margin:20px; box-shadow:0 2px 6px rgba(0,0,0,0.1); }
+    .report-container h2 { margin-bottom:15px; }
+    .status-buttons button { margin-right:10px; padding:10px 15px; border:none; border-radius:6px; cursor:pointer; font-weight:bold; }
+    .pending { background:#FF8042; color:#fff; }
+    .progress { background:#0088FE; color:#fff; }
+    .resolved { background:#00C49F; color:#fff; }
+  </style>
+</head>
+<body>
+  <div class="main">
+    <div class="topbar">Complaint Details</div>
+    <div class="report-container">
+      <h2 id="report-title">Loading...</h2>
+      <p><strong>Description:</strong> <span id="report-desc"></span></p>
+      <p><strong>Officer Assigned:</strong> <span id="report-officer"></span></p>
+      <p><strong>Status:</strong> <span id="report-status"></span></p>
+      <p><strong>Location:</strong> <span id="report-location"></span></p>
+      <p><strong>Date:</strong> <span id="report-date"></span></p>
+      
+      <div class="status-buttons">
+        <button class="pending" onclick="updateStatus('Pending')">Mark Pending</button>
+        <button class="progress" onclick="updateStatus('In Progress')">Mark In Progress</button>
+        <button class="resolved" onclick="updateStatus('Resolved')">Mark Resolved</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { db } from "./firebase-config.js";
+    import { ref, get, update } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+    // get reportId from URL
+    const params = new URLSearchParams(window.location.search);
+    const reportId = params.get("reportId");
+
+    const titleEl = document.getElementById("report-title");
+    const descEl = document.getElementById("report-desc");
+    const officerEl = document.getElementById("report-officer");
+    const statusEl = document.getElementById("report-status");
+    const locationEl = document.getElementById("report-location");
+    const dateEl = document.getElementById("report-date");
+
+    async function loadReport() {
+      const reportRef = ref(db, "reports/" + reportId);
+      const snapshot = await get(reportRef);
+      if (snapshot.exists()) {
+        const r = snapshot.val();
+        titleEl.textContent = "Report ID: " + reportId;
+        descEl.textContent = r.description || "No description";
+        officerEl.textContent = r.username || "Unknown";
+        statusEl.textContent = r.status || "Submitted";
+        locationEl.textContent = r.location || "N/A";
+        dateEl.textContent = r.submitDate || "N/A";
+      } else {
+        titleEl.textContent = "Report not found.";
+      }
+    }
+
+    // Update status
+    window.updateStatus = async function(newStatus) {
+      const reportRef = ref(db, "reports/" + reportId);
+      await update(reportRef, { status: newStatus });
+      statusEl.textContent = newStatus;
+      alert("Status updated to " + newStatus);
+    };
+
+    loadReport();
+  </script>
+</body>
+</html>

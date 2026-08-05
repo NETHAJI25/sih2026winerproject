@@ -1,0 +1,80 @@
+/* General Styles */
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 200px;
+  background: #222;
+  color: white;
+  padding: 20px;
+  height: 100vh;
+}
+.sidebar h2 {
+  margin-bottom: 20px;
+}
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+.sidebar ul li {
+  padding: 10px;
+  margin: 5px 0;
+  background: #444;
+  cursor: pointer;
+}
+.sidebar ul li:hover {
+  background: #666;
+}
+
+/* Main Content */
+.main-content {
+  flex: 1;
+  padding: 20px;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+th, td {
+  border: 1px solid #ddd;
+  padding: 8px;
+}
+th {
+  background: #f4f4f4;
+  text-align: left;
+}
+td button, td a {
+  padding: 6px 12px;
+  text-decoration: none;
+  background: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+}
+td a {
+  display: inline-block;
+}
+td button:hover, td a:hover {
+  background: #0056b3;
+}
+
+/* Back Button */
+.back-btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 8px 14px;
+  background: #555;
+  color: white;
+  border-radius: 4px;
+  text-decoration: none;
+}
+.back-btn:hover {
+  background: #333;
+}

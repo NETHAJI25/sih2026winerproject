@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>InnoIndia — Citizen Portal</title>
+
+  <!-- Google font -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <!-- Material icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- NAV -->
+  <header class="nav">
+    <div class="nav-left">
+      <div class="logo">
+        <span class="material-icons">account_balance</span>
+        <span class="brand">InnoIndia</span>
+        <span class="pill">Citizen Portal</span>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <button class="role-switch">Government</button>
+      <button class="signin">Sign In</button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <main class="main">
+    <section class="hero">
+      <h1>Report Civic Issues</h1>
+      <p class="subtitle">Help improve your community by reporting local issues</p>
+      <div>
+        <button id="reportBtn" class="primary-btn"><span class="material-icons">add</span> Report New Issue</button>
+      </div>
+    </section>
+
+    <!-- STATUS CARDS -->
+    <section class="status-cards">
+      <div class="status-card">
+        <div class="status-number" id="pendingCount">—</div>
+        <div class="status-label">Pending</div>
+      </div>
+      <div class="status-card">
+        <div class="status-number" id="inprogressCount">—</div>
+        <div class="status-label">In Progress</div>
+      </div>
+      <div class="status-card">
+        <div class="status-number" id="resolvedCount">—</div>
+        <div class="status-label">Resolved</div>
+      </div>
+    </section>
+
+    <!-- Tabs -->
+    <section class="tabs-wrap">
+      <div class="tabs">
+        <button class="tab active" data-tab="recent">Recent Reports</button>
+        <button class="tab" data-tab="my">My Reports (0)</button>
+      </div>
+
+      <div class="search-filter">
+        <input id="searchInput" placeholder="Search reports..." />
+        <button id="filterBtn" class="outline-btn"><span class="material-icons">filter_list</span> Filter</button>
+      </div>
+    </section>
+
+    <!-- CATEGORIES -->
+    <section class="categories">
+      <h3>Categories <small class="chip">Popular</small></h3>
+      <div class="category-grid" id="categoryGrid">
+        <!-- JS will inject categories -->
+      </div>
+    </section>
+
+    <!-- REPORTS -->
+    <section class="reports-section">
+      <h3>Recent Reports in Your Area</h3>
+      <div class="reports-grid" id="reportsGrid">
+        <!-- JS will render report cards -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Floating action button -->
+  <button id="fab" class="fab" title="Report new issue"><span class="material-icons">add</span></button>
+
+  <!-- Modal for View Details / Create Report -->
+  <div id="modal" class="modal hidden">
+    <div class="modal-card">
+      <button id="closeModal" class="modal-close"><span class="material-icons">close</span></button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

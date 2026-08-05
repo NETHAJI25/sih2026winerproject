@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complaint Report</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h2>Complaint Report</h2>
+  <div id="report"></div>
+  <br>
+  <a href="index.html" class="back-btn">⬅ Back to Dashboard</a>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js";
+
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "blogapp-bd46d.firebaseapp.com",
+      databaseURL: "https://blogapp-bd46d-default-rtdb.firebaseio.com/",
+      projectId: "blogapp-bd46d",
+      storageBucket: "blogapp-bd46d.appspot.com",
+      messagingSenderId: "SENDER_ID",
+      appId: "APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Get ID from URL
+    const params = new URLSearchParams(window.location.search);
+    const reportId = params.get("id");
+
+    if (reportId) {
+      const complaintRef = ref(db, "blogs/reports/" + reportId);
+      get(complaintRef).then(snapshot => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          document.getElementById("report").innerHTML = `
+            <p><b>ID:</b> ${reportId}</p>
+            <p><b>Issue:</b> ${data.description || "No description"}</p>
+            <p><b>User:</b> ${data.username || "Unknown"}</p>
+            <p><b>Status:</b> ${data.status || "Pending"}</p>
+            <p><b>Location:</b> ${data.location || "N/A"}</p>
+            <p><b>Date:</b> ${data.submitDate || "N/A"}</p>
+            ${data.photo ? `<img src="${data.photo}" width="200"/>` : ""}
+            ${data.video ? `<video src="${data.video}" width="300" controls></video>` : ""}
+          `;
+        } else {
+          document.getElementById("report").innerText = "No complaint found.";
+        }
+      });
+    }
+  </script>
+</body>
+</html>

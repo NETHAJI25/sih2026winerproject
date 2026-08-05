@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complaint Report</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h2>Complaint Report</h2>
+  <div id="report"></div>
+  <br>
+  <a href="index.html" class="back-btn">⬅ Back to Dashboard</a>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getDatabase, ref, get } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+    // Firebase Config
+    const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      databaseURL: "https://YOUR_PROJECT.firebaseio.com",
+      projectId: "YOUR_PROJECT",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "SENDER_ID",
+      appId: "APP_ID"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getDatabase(app);
+
+    // Get ID from URL
+    const params = new URLSearchParams(window.location.search);
+    const complaintId = params.get("id");
+
+    if (complaintId) {
+      const complaintRef = ref(db, "complaints/" + complaintId);
+      get(complaintRef).then(snapshot => {
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          document.getElementById("report").innerHTML = `
+            <p><b>ID:</b> ${complaintId}</p>
+            <p><b>Issue:</b> ${data.issue}</p>
+            <p><b>Officer Assigned:</b> ${data.officerAssigned}</p>
+            <p><b>Status:</b> ${data.status}</p>
+            <p><b>Location:</b> ${data.location}</p>
+            <p><b>Date:</b> ${data.date}</p>
+            <p><b>Description:</b> ${data.description || "No description"}</p>
+            ${data.photo ? `<img src="${data.photo}" width="200"/>` : ""}
+            ${data.video ? `<video src="${data.video}" width="300" controls></video>` : ""}
+          `;
+        } else {
+          document.getElementById("report").innerText = "No complaint found.";
+        }
+      });
+    }
+  </script>
+</body>
+</html>

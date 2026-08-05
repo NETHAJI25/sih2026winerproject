@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>InnoIndia — Government Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <header class="nav">
+    <div class="nav-left">
+      <div class="logo">
+        <span class="material-icons">account_balance</span>
+        <span class="brand">InnoIndia</span>
+        <span class="pill">Government Dashboard</span>
+      </div>
+    </div>
+
+    <div class="nav-right">
+      <button class="role-switch">Citizen</button>
+      <div class="notif">
+        <span class="material-icons">notifications</span>
+      </div>
+      <button class="signin">Sign Out</button>
+    </div>
+  </header>
+
+  <main class="main">
+    <section class="gov-hero">
+      <h1>Government Dashboard</h1>
+      <p class="subtitle">Monitor and manage civic reports across your jurisdiction.</p>
+    </section>
+
+    <section class="status-cards">
+      <div class="status-card">
+        <div class="status-number" id="govTotal">—</div>
+        <div class="status-label">Total Reports</div>
+      </div>
+      <div class="status-card">
+        <div class="status-number" id="govPending">—</div>
+        <div class="status-label">Pending</div>
+      </div>
+      <div class="status-card">
+        <div class="status-number" id="govInProgress">—</div>
+        <div class="status-label">In Progress</div>
+      </div>
+      <div class="status-card">
+        <div class="status-number" id="govResolved">—</div>
+        <div class="status-label">Resolved</div>
+      </div>
+    </section>
+
+    <section class="charts">
+      <div class="chart-card">
+        <h4>Reports by Category</h4>
+        <canvas id="barChart" height="160"></canvas>
+      </div>
+      <div class="chart-card">
+        <h4>Status Distribution</h4>
+        <canvas id="donutChart" height="160"></canvas>
+      </div>
+    </section>
+
+    <section class="reports-section">
+      <h3>All Reports</h3>
+      <div class="reports-grid" id="govReportsGrid"></div>
+    </section>
+  </main>
+
+  <script src="government.js"></script>
+</body>
+</html>

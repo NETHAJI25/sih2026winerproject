@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INNOINDIA Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>INNOINDIA</h2>
+    <ul>
+      <li>Dashboard</li>
+      <li>Complaints</li>
+      <li>Analytics</li>
+      <li>Settings</li>
+      <li>History</li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main-content">
+    <h1>Complaints Dashboard</h1>
+    <p>Below is the live list of complaints fetched from Firebase database.</p>
+
+    <!-- Complaints Table -->
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Issue</th>
+          <th>Officer Assigned</th>
+          <th>Status</th>
+          <th>Location</th>
+          <th>Date</th>
+          <th>Action</th>
+          <th>View</th>
+        </tr>
+      </thead>
+      <tbody id="complaints-table"></tbody>
+    </table>
+  </div>
+
+  <!-- Firebase Logic -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>

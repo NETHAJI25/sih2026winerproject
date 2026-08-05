@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Government Portal</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js"></script>
+  <script src="app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Government Portal</h1>
+    <div id="authSection">
+      <input type="email" id="govEmail" placeholder="Email">
+      <input type="password" id="govPassword" placeholder="Password">
+      <button onclick="signupGovernment()">Sign Up</button>
+      <button onclick="loginGovernment()">Login</button>
+    </div>
+
+    <div id="governmentDashboard" style="display:none;">
+      <h2>All Civilian Reports</h2>
+      <ul id="allReports"></ul>
+    </div>
+  </div>
+  <script src="government.js"></script>
+</body>
+</html>

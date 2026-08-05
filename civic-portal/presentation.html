@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>INNOINDIA — Crowdsourced Civic Issue Reporting &amp; Resolution System</title>
+<style>
+  :root {
+    --navy: #0A1F44;
+    --navy-2: #0E2A5C;
+    --navy-3: #133468;
+    --saffron: #FF9933;
+    --green: #138808;
+    --white: #FFFFFF;
+    --muted: #B7C3DD;
+    --card: rgba(255, 255, 255, 0.06);
+    --card-border: rgba(255, 255, 255, 0.14);
+    --radius: 14px;
+    --shadow: 0 18px 45px rgba(0, 0, 0, 0.35);
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    font-family: var(--font);
+    background: radial-gradient(1200px 700px at 80% -10%, #16357a 0%, transparent 55%),
+                radial-gradient(900px 600px at -10% 110%, #0e3a2e 0%, transparent 50%),
+                var(--navy);
+    color: var(--white);
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- Ribbon accents ---------- */
+  .ribbon {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    display: flex;
+    z-index: 50;
+  }
+  .ribbon span { flex: 1; }
+  .ribbon .saf { background: var(--saffron); }
+  .ribbon .wht { background: #FFFFFF; }
+  .ribbon .grn { background: var(--green); }
+
+  /* ---------- Progress bar ---------- */
+  #progress {
+    position: fixed;
+    top: 6px;
+    left: 0;
+    height: 4px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--saffron), #ffb36b, var(--green));
+    z-index: 60;
+    transition: width 0.35s ease;
+    border-radius: 0 4px 4px 0;
+  }
+
+  /* ---------- Slide deck ---------- */
+  #deck { height: 100vh; width: 100vw; position: relative; }
+
+  .slide {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 56px 64px 72px;
+    opacity: 0;
+    transform: translateX(40px) scale(0.985);
+    visibility: hidden;
+    pointer-events: none;
+    transition: opacity 0.45s ease, transform 0.45s ease, visibility 0.45s;
+  }
+
+  .slide.active {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+    visibility: visible;
+    pointer-events: auto;
+  }
+
+  .slide.prev {
+    transform: translateX(-40px) scale(0.985);
+  }
+
+  .inner {
+    width: 100%;
+    max-width: 1120px;
+    max-height: 100%;
+    overflow: auto;
+    text-align: center;
+  }
+
+  /* ---------- Typography ---------- */
+  h1 { font-size: 46px; line-height: 1.12; letter-spacing: 0.5px; }
+  h2 {
+    font-size: 36px;
+    line-height: 1.15;
+    margin-bottom: 8px;
+    letter-spacing: 0.4px;
+  }
+  h3 { font-size: 20px; margin-bottom: 6px; }
+  .eyebrow {
+    display: inline-block;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--saffron);
+    background: rgba(255, 153, 51, 0.12);
+    border: 1px solid rgba(255, 153, 51, 0.35);
+    padding: 6px 14px;
+    border-radius: 999px;
+    margin-bottom: 18px;
+  }
+  .lead { font-size: 18px; color: var(--muted); line-height: 1.6; }
+  .muted { color: var(--muted); }
+  .small { font-size: 14px; }
+
+  .tagline {
+    font-size: 24px;
+    font-weight: 600;
+    letter-spacing: 6px;
+    color: var(--saffron);
+    margin: 18px 0 8px;
+  }
+  .tagline .dot { color: var(--white); }
+
+  /* ---------- Glass cards ---------- */
+  .grid {
+    display: grid;
+    gap: 16px;
+    margin-top: 26px;
+  }
+  .g-2 { grid-template-columns: repeat(2, 1fr); }
+  .g-3 { grid-template-columns: repeat(3, 1fr); }
+  .g-4 { grid-template-columns: repeat(4, 1fr); }
+
+  .card {
+    background: var(--card);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    box-shadow: var(--shadow);
+    text-align: left;
+    transition: transform 0.25s ease, border-color 0.25s ease;
+  }
+  .card:hover { transform: translateY(-4px); border-color: rgba(255, 255, 255, 0.3); }
+
+  .card h3 { display: flex; align-items: center; gap: 8px; }
+  .num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 26px;
+    padding: 0 7px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 800;
+    background: var(--saffron);
+    color: var(--navy);
+  }
+  .num.g { background: var(--green); color: #fff; }
+  .card p { font-size: 15px; color: var(--muted); line-height: 1.55; margin-top: 6px; }
+
+  .badge {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: rgba(19, 136, 8, 0.18);
+    color: #6fe26a;
+    border: 1px solid rgba(19, 136, 8, 0.5);
+  }
+
+  /* ---------- Stats (impact slide) ---------- */
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 26px; }
+  .stat {
+    background: var(--card);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 24px 16px;
+    box-shadow: var(--shadow);
+  }
+  .stat b { display: block; font-size: 34px; color: var(--saffron); letter-spacing: 0.5px; }
+  .stat .green-num { color: #6fe26a; }
+  .stat span { font-size: 13.5px; color: var(--muted); line-height: 1.4; display: block; margin-top: 6px; }
+
+  /* ---------- Lists (problem slide) ---------- */
+  .prob-list { list-style: none; margin-top: 24px; display: grid; gap: 14px; text-align: left; }
+  .prob-list li {
+    background: var(--card);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    font-size: 16.5px;
+    line-height: 1.5;
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    box-shadow: var(--shadow);
+  }
+  .prob-list .mark {
+    flex: 0 0 auto;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 15px;
+    background: rgba(255, 153, 51, 0.16);
+    color: var(--saffron);
+    border: 1px solid rgba(255, 153, 51, 0.4);
+  }
+
+  /* ---------- Architecture flow ---------- */
+  .flow { display: flex; align-items: center; justify-content: center; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+  .node {
+    background: var(--card);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 18px 22px;
+    min-width: 170px;
+    box-shadow: var(--shadow);
+  }
+  .node .ico {
+    width: 40px; height: 40px;
+    margin: 0 auto 10px;
+    border-radius: 11px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 17px;
+    background: rgba(255, 153, 51, 0.16);
+    color: var(--saffron);
+    border: 1px solid rgba(255, 153, 51, 0.4);
+  }
+  .node .ico.g { background: rgba(19, 136, 8, 0.18); color: #6fe26a; border-color: rgba(19, 136, 8, 0.5); }
+  .node b { display: block; font-size: 16px; }
+  .node span { font-size: 13px; color: var(--muted); }
+  .arrow {
+    font-size: 26px;
+    color: var(--saffron);
+    font-weight: 800;
+    padding: 0 4px;
+    user-select: none;
+  }
+
+  /* ---------- Placeholders / screenshots ---------- */
+  .shots { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-top: 26px; }
+  .shot {
+    border: 2px dashed rgba(255, 153, 51, 0.6);
+    border-radius: var(--radius);
+    min-height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 8px;
+    background: rgba(255, 153, 51, 0.05);
+    color: var(--saffron);
+    padding: 16px;
+  }
+  .shot .cam {
+    width: 44px; height: 32px;
+    border: 2px solid var(--saffron);
+    border-radius: 6px;
+    position: relative;
+    opacity: 0.85;
+  }
+  .shot .cam::before {
+    content: "";
+    position: absolute;
+    top: -8px; left: 8px;
+    width: 12px; height: 8px;
+    background: var(--saffron);
+    border-radius: 3px 3px 0 0;
+  }
+  .shot span { font-size: 15px; font-weight: 600; letter-spacing: 0.5px; }
+  .shot em { font-style: normal; font-size: 12.5px; color: var(--muted); }
+
+  /* ---------- Feature chips ---------- */
+  .chip {
+    display: inline-block;
+    font-size: 13.5px;
+    font-weight: 600;
+    padding: 7px 14px;
+    border-radius: 999px;
+    background: var(--card);
+    border: 1px solid var(--card-border);
+    color: var(--muted);
+  }
+
+  /* ---------- Tech stack ---------- */
+  .tech-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 14px;
+    margin-top: 26px;
+  }
+  .tech {
+    background: var(--card);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 20px;
+    text-align: left;
+    box-shadow: var(--shadow);
+  }
+  .tech b { font-size: 17px; display: block; }
+  .tech span { font-size: 13.5px; color: var(--muted); line-height: 1.5; display: block; margin-top: 5px; }
+
+  /* ---------- Buttons / CTA ---------- */
+  .btn {
+    display: inline-block;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 700;
+    color: #fff;
+    background: linear-gradient(135deg, var(--saffron), #ff7a00);
+    border: none;
+    border-radius: 999px;
+    padding: 13px 26px;
+    cursor: pointer;
+    letter-spacing: 0.4px;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-decoration: none;
+  }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(255, 153, 51, 0.35); }
+  .btn.green { background: linear-gradient(135deg, var(--green), #0b7a05); }
+  .btn.green:hover { box-shadow: 0 12px 26px rgba(19, 136, 8, 0.35); }
+
+  /* ---------- Team ---------- */
+  .team { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-top: 26px; }
+  .member {
+    background: var(--card);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid var(--card-border);
+    border-radius: var(--radius);
+    padding: 22px 18px;
+    text-align: center;
+    box-shadow: var(--shadow);
+  }
+  .member .avatar {
+    width: 58px; height: 58px;
+    margin: 0 auto 12px;
+    border-radius: 50%;
+    background: rgba(255, 153, 51, 0.15);
+    border: 2px solid rgba(255, 153, 51, 0.55);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 800; color: var(--saffron);
+  }
+  .member .avatar.g { background: rgba(19, 136, 8, 0.15); border-color: rgba(19, 136, 8, 0.55); color: #6fe26a; }
+  .member b { display: block; font-size: 16.5px; margin-bottom: 4px; }
+  .member span { font-size: 14px; color: var(--muted); }
+  .member .name-line { display: block; margin-top: 10px; font-size: 13.5px; color: var(--saffron); letter-spacing: 1px; }
+
+  /* ---------- Thank you ---------- */
+  .ty-ribbon {
+    height: 10px;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--saffron), #FFFFFF 50%, var(--green));
+    width: 320px;
+    margin: 26px auto;
+    box-shadow: 0 0 24px rgba(255, 153, 51, 0.35);
+  }
+  .qr-box {
+    width: 150px; height: 150px;
+    margin: 22px auto;
+    border: 2px dashed rgba(255, 153, 51, 0.65);
+    border-radius: 16px;
+    background: rgba(255, 153, 51, 0.05);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 700; color: var(--saffron);
+    letter-spacing: 1px;
+    text-align: center;
+  }
+
+  /* ---------- Nav ---------- */
+  .controls {
+    position: fixed;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 18px;
+    z-index: 60;
+    pointer-events: none;
+  }
+  .controls > * { pointer-events: auto; }
+  .nav-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--card-border);
+    background: var(--card);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: var(--white);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  .nav-btn:hover:not(:disabled) { background: rgba(255, 153, 51, 0.25); border-color: var(--saffron); }
+  .nav-btn:disabled { opacity: 0.35; cursor: default; }
+
+  .dots { display: flex; gap: 8px; align-items: center; }
+  .dot {
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: transparent;
+    cursor: pointer;
+    padding: 0;
+    transition: all 0.25s ease;
+  }
+  .dot.active {
+    background: var(--saffron);
+    border-color: var(--saffron);
+    transform: scale(1.25);
+    width: 22px;
+    border-radius: 999px;
+  }
+
+  #counter {
+    position: fixed;
+    bottom: 22px;
+    right: 26px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 1px;
+    z-index: 60;
+  }
+
+  #hint {
+    position: fixed;
+    bottom: 26px;
+    left: 26px;
+    font-size: 12px;
+    color: rgba(183, 195, 221, 0.65);
+    letter-spacing: 0.6px;
+    z-index: 60;
+  }
+
+  /* ---------- Scrollbars inside slides ---------- */
+  .inner::-webkit-scrollbar { width: 8px; }
+  .inner::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 8px; }
+
+  @media (max-width: 900px) {
+    h1 { font-size: 34px; }
+    h2 { font-size: 28px; }
+    .g-3, .g-4, .stats, .tech-row, .team, .shots { grid-template-columns: repeat(2, 1fr); }
+    .slide { padding: 56px 28px 84px; }
+  }
+  @media (max-width: 620px) {
+    .g-2, .g-3, .g-4, .stats, .tech-row, .team, .shots { grid-template-columns: 1fr; }
+    .flow { flex-direction: column; }
+    .arrow { transform: rotate(90deg); }
+    #hint { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="ribbon"><span class="saf"></span><span class="wht"></span><span class="grn"></span></div>
+<div id="progress"></div>
+
+<main id="deck">
+
+  <!-- ============ SLIDE 1 : TITLE ============ -->
+  <section class="slide active" data-title="Title">
+    <div class="inner">
+      <span class="eyebrow">Smart India Hackathon 2026</span>
+      <h1>INNOINDIA</h1>
+      <div class="ty-ribbon"></div>
+      <p class="tagline">Report<span class="dot">.</span>&nbsp;Track<span class="dot">.</span>&nbsp;Resolve<span class="dot">.</span></p>
+      <p class="lead">Crowdsourced Civic Issue Reporting &amp; Resolution System</p>
+      <div style="margin-top: 30px; display: flex; gap: 14px; justify-content: center; flex-wrap: wrap;">
+        <span class="badge">Problem Statement SIH25031</span>
+        <span class="badge">Govt. of Jharkhand</span>
+        <span class="badge" style="background: rgba(19,136,8,0.15); color:#6fe26a;">Clean &amp; Green Technology</span>
+      </div>
+      <p class="muted" style="margin-top: 30px; font-size: 16px;">
+        <b style="color:#fff;">Team Vibranium</b> &nbsp;•&nbsp; SRM Institute of Science and Technology, Ramapuram
+      </p>
+      <p class="muted small" style="margin-top: 8px;">6 Members &nbsp;•&nbsp; Internal Hackathon 2026</p>
+      <p class="muted small" style="margin-top: 22px;">Use arrow keys or on-screen buttons to navigate</p>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 2 : PROBLEM STATEMENT ============ -->
+  <section class="slide" data-title="Problem Statement">
+    <div class="inner">
+      <span class="eyebrow">Problem Statement</span>
+      <h2>The Civic Reporting Gap</h2>
+      <p class="lead">Problem Statement SIH25031 — Crowdsourced Civic Issue Reporting and Resolution System</p>
+      <ul class="prob-list">
+        <li><span class="mark">1</span><span><b style="color:#fff;">No easy channel</b> for citizens to report potholes, garbage dumps, broken streetlights, water leaks or other civic problems quickly.</span></li>
+        <li><span class="mark">2</span><span><b style="color:#fff;">Unstructured data</b> — government departments do not receive structured, geotagged, photo-backed reports they can act upon.</span></li>
+        <li><span class="mark">3</span><span><b style="color:#fff;">Issues get ignored</b> — no ownership, no deadlines, no escalation, and no feedback loop to the citizen who reported.</span></li>
+        <li><span class="mark">4</span><span><b style="color:#fff;">Zero transparency</b> — citizens cannot track the status of their complaint, eroding trust in civic agencies.</span></li>
+        <li><span class="mark">5</span><span><b style="color:#fff;">No accountability</b> — departments have no analytics or priority data to allocate resources where they matter most.</span></li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 3 : SOCIETAL IMPACT ============ -->
+  <section class="slide" data-title="Impact">
+    <div class="inner">
+      <span class="eyebrow">Why It Matters</span>
+      <h2>Societal Impact &amp; Why It Matters</h2>
+      <p class="lead">Bridging the gap between citizens and civic agencies with data-driven accountability.</p>
+      <div class="stats">
+        <div class="stat">
+          <b>10M+</b>
+          <span>Waste dumps and civic grievances reported nationally each year through Swachh Bharat and related channels</span>
+        </div>
+        <div class="stat">
+          <b class="green-num">100</b>
+          <span>Smart Cities Mission cities where integrated, geotagged issue resolution improves daily urban life</span>
+        </div>
+        <div class="stat">
+          <b>Faster</b>
+          <span>Structured reports cut resolution time from weeks to days, and restore citizen–government trust</span>
+        </div>
+      </div>
+      <div class="grid g-3">
+        <div class="card">
+          <h3><span class="num">A</span>Cleaner Cities</h3>
+          <p>Timely cleanup of garbage, potholes and water leaks keeps public spaces safe, healthy and liveable.</p>
+        </div>
+        <div class="card">
+          <h3><span class="num g">B</span>Informed Government</h3>
+          <p>Departments receive structured, geotagged, photo-backed reports with priority analytics instead of scattered complaints.</p>
+        </div>
+        <div class="card">
+          <h3><span class="num">C</span>Rebuilt Trust</h3>
+          <p>Open status tracking and resolution feedback show citizens their voice leads to visible change.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 4 : OUR SOLUTION ============ -->
+  <section class="slide" data-title="Solution">
+    <div class="inner">
+      <span class="eyebrow">Our Solution</span>
+      <h2>Two Portals, One Workflow</h2>
+      <p class="lead">A citizen portal for reporting and a government portal for resolution, linked by a shared data layer.</p>
+      <div class="grid g-2">
+        <div class="card">
+          <h3><span class="num">1</span>Citizen Portal</h3>
+          <p>Report issues with a photo and GPS location in under a minute. Track every status update, from Submitted to Resolved.</p>
+        </div>
+        <div class="card">
+          <h3><span class="num g">2</span>Government Portal</h3>
+          <p>Officers view structured, geotagged reports, update statuses, and act on prioritized, category-tagged workloads.</p>
+        </div>
+        <div class="card">
+          <h3><span class="num">3</span>Geotagged Photo Reports</h3>
+          <p>Every issue is mapped, photographed and categorized, giving departments verified, actionable evidence.</p>
+        </div>
+        <div class="card">
+          <h3><span class="num g">4</span>Analytics Dashboard</h3>
+          <p>Live charts show issue density by area, resolution rates and department workloads for data-driven decisions.</p>
+        </div>
+      </div>
+      <div style="margin-top: 18px;">
+        <span class="chip">AI category suggestion</span>
+        <span class="chip">Status tracking</span>
+        <span class="chip">Priority tagging</span>
+        <span class="chip">Frontend + data layer architecture</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 5 : KEY FEATURES ============ -->
+  <section class="slide" data-title="Key Features">
+    <div class="inner">
+      <span class="eyebrow">Capabilities</span>
+      <h2>Key Features</h2>
+      <div class="grid g-4">
+        <div class="card"><h3><span class="num">1</span>Photo + GPS Report</h3><p>One-click report with camera capture and automatic location tagging.</p></div>
+        <div class="card"><h3><span class="num g">2</span>Real-time Status</h3><p>Track issues from Submitted to In Progress to Resolved, live.</p></div>
+        <div class="card"><h3><span class="num">3</span>Priority &amp; Category</h3><p>Auto-suggested categories and severity tags for every report.</p></div>
+        <div class="card"><h3><span class="num g">4</span>Government Dashboard</h3><p>Officer view for triage, assignment and status updates.</p></div>
+        <div class="card"><h3><span class="num">5</span>Analytics Charts</h3><p>Area-wise density, resolution time and workload insights.</p></div>
+        <div class="card"><h3><span class="num g">6</span>Transparency</h3><p>Public status history keeps every stakeholder accountable.</p></div>
+        <div class="card"><h3><span class="num">7</span>Multilingual-ready</h3><p>Architecture prepared for 9 Indian languages.</p></div>
+        <div class="card"><h3><span class="num g">8</span>Offline-capable</h3><p>Reports queue locally and sync when connectivity returns.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 6 : TECH STACK ============ -->
+  <section class="slide" data-title="Tech Stack">
+    <div class="inner">
+      <span class="eyebrow">Technology</span>
+      <h2>Tech Stack</h2>
+      <p class="lead">Deliberately simple, fast and production-ready.</p>
+      <div class="tech-row">
+        <div class="tech"><b>HTML5</b><span>Semantic structure, offline-capable single-page experience.</span></div>
+        <div class="tech"><b>CSS3</b><span>Glassmorphism UI, responsive layouts, custom design system.</span></div>
+        <div class="tech"><b>Vanilla JavaScript</b><span>Zero dependencies — fast, lightweight, easy to audit.</span></div>
+        <div class="tech"><b>LocalStorage</b><span>Offline demo persistence with no server or database setup.</span></div>
+        <div class="tech"><b>Firebase-ready</b><span>Auth, Firestore and Storage interfaces designed for real deployment.</span></div>
+        <div class="tech"><b>Vercel</b><span>One-command hosting with free HTTPS domain and instant deploys.</span></div>
+      </div>
+      <div style="margin-top: 22px;">
+        <span class="badge">Works 100% offline</span>
+        <span class="badge" style="background:rgba(19,136,8,0.15); color:#6fe26a;">No external dependencies</span>
+        <span class="badge">Scales to Firebase + Vercel</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 7 : PROTOTYPE DEMO ============ -->
+  <section class="slide" data-title="Demo">
+    <div class="inner">
+      <span class="eyebrow">Live Demonstration</span>
+      <h2>Prototype Demo Flow</h2>
+      <div class="grid g-4" style="text-align:left;">
+        <div class="card"><h3><span class="num">1</span>Open App</h3><p>Citizen lands on the report screen with location permission.</p></div>
+        <div class="card"><h3><span class="num g">2</span>Report Issue</h3><p>Attach photo, GPS pin and category; AI suggests the label.</p></div>
+        <div class="card"><h3><span class="num">3</span>Track Status</h3><p>Citizen follows the issue through live status updates.</p></div>
+        <div class="card"><h3><span class="num g">4</span>Resolved</h3><p>Government officer marks it Resolved; citizen sees the proof.</p></div>
+      </div>
+      <div class="shots">
+        <div class="shot"><div class="cam"></div><span>Screenshot: Citizen Report Form</span><em>Paste demo screenshot here</em></div>
+        <div class="shot"><div class="cam"></div><span>Screenshot: My Reports</span><em>Paste demo screenshot here</em></div>
+        <div class="shot"><div class="cam"></div><span>Screenshot: Govt Dashboard</span><em>Paste demo screenshot here</em></div>
+        <div class="shot"><div class="cam"></div><span>Screenshot: Analytics</span><em>Paste demo screenshot here</em></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 8 : ARCHITECTURE ============ -->
+  <section class="slide" data-title="Architecture">
+    <div class="inner">
+      <span class="eyebrow">How It Fits Together</span>
+      <h2>Architecture</h2>
+      <div class="flow">
+        <div class="node"><div class="ico">C</div><b>Citizen App</b><span>Report with photo &amp; GPS</span></div>
+        <div class="arrow">&rarr;</div>
+        <div class="node"><div class="ico g">D</div><b>Reports Data Layer</b><span>Structured + geotagged store</span></div>
+        <div class="arrow">&rarr;</div>
+        <div class="node"><div class="ico">G</div><b>Government Portal</b><span>Assign, update, resolve</span></div>
+        <div class="arrow">&rarr;</div>
+        <div class="node"><div class="ico g">S</div><b>Status Updates</b><span>Push state changes</span></div>
+        <div class="arrow">&rarr;</div>
+        <div class="node"><div class="ico">N</div><b>Citizen Notified</b><span>Track to Resolved</span></div>
+      </div>
+      <div class="grid g-3">
+        <div class="card"><h3><span class="num">F</span>Frontend Layer</h3><p>Citizen portal and government portal as responsive web apps.</p></div>
+        <div class="card"><h3><span class="num g">D</span>Data Layer</h3><p>LocalStorage for the demo; Firestore-ready schema for production.</p></div>
+        <div class="card"><h3><span class="num">A</span>Feedback Loop</h3><p>Every status change flows back to the citizen for full transparency.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 9 : INNOVATION ============ -->
+  <section class="slide" data-title="Innovation">
+    <div class="inner">
+      <span class="eyebrow">What Makes Us Different</span>
+      <h2>Unique &amp; Innovative Aspects</h2>
+      <div class="grid g-2">
+        <div class="card">
+          <h3><span class="num">1</span>Unified Citizen–Govt Workflow</h3>
+          <p>One continuous loop from report to resolution — both sides on the same data, no calls, no lost paper.</p>
+        </div>
+        <div class="card">
+          <h3><span class="num g">2</span>Analytics-driven Prioritization</h3>
+          <p>Departments act on issue density and severity trends instead of complaint order alone.</p>
+        </div>
+        <div class="card">
+          <h3><span class="num">3</span>Zero-config Offline Demo</h3>
+          <p>Full experience runs from a single HTML file — no installs, no servers, works in any classroom.</p>
+        </div>
+        <div class="card">
+          <h3><span class="num g">4</span>Ready for Real Deployment</h3>
+          <p>Schema and architecture map directly to Firebase + Vercel production hosting.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 10 : ROADMAP ============ -->
+  <section class="slide" data-title="Roadmap">
+    <div class="inner">
+      <span class="eyebrow">Beyond the Hackathon</span>
+      <h2>Product Viability &amp; Future Roadmap</h2>
+      <div class="grid g-3">
+        <div class="card"><h3><span class="num">1</span>AI Auto-categorization</h3><p>Vision models classify issue type and severity from the photo alone.</p></div>
+        <div class="card"><h3><span class="num g">2</span>Department Auto-routing</h3><p>Reports reach the right department instantly, by category and ward.</p></div>
+        <div class="card"><h3><span class="num">3</span>9 Indian Languages</h3><p>Multilingual UI for inclusive citizen participation across states.</p></div>
+        <div class="card"><h3><span class="num g">4</span>Mobile App</h3><p>Native apps with push notifications and offline-first reporting.</p></div>
+        <div class="card"><h3><span class="num">5</span>Smart City Integration</h3><p>Feed data into Smart Cities Mission dashboards and GIS maps.</p></div>
+        <div class="card"><h3><span class="num g">6</span>ML Prioritization</h3><p>Predictive models flag high-risk, recurring or urgent civic issues.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 11 : TEAM ============ -->
+  <section class="slide" data-title="Team">
+    <div class="inner">
+      <span class="eyebrow">The People</span>
+      <h2>Team Vibranium</h2>
+      <p class="lead">Six members, one mission — SRM Institute of Science and Technology, Ramapuram.</p>
+      <div class="team">
+        <div class="member"><div class="avatar">TL</div><b>Team Lead</b><span>Vision, planning and coordination</span><span class="name-line">Name: ______</span></div>
+        <div class="member"><div class="avatar g">FE</div><b>Frontend Developer</b><span>Citizen &amp; government portal UI</span><span class="name-line">Name: ______</span></div>
+        <div class="member"><div class="avatar">BD</div><b>Backend / Data</b><span>Data layer, schema, integration</span><span class="name-line">Name: ______</span></div>
+        <div class="member"><div class="avatar g">UX</div><b>UI/UX Designer</b><span>Design system and prototypes</span><span class="name-line">Name: ______</span></div>
+        <div class="member"><div class="avatar">PR</div><b>Presenter</b><span>Demo and pitch delivery</span><span class="name-line">Name: ______</span></div>
+        <div class="member"><div class="avatar g">RS</div><b>Researcher</b><span>Problem insights and data</span><span class="name-line">Name: ______</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ SLIDE 12 : THANK YOU ============ -->
+  <section class="slide" data-title="Thank You">
+    <div class="inner">
+      <h1 style="font-size:64px;">Thank You</h1>
+      <div class="ty-ribbon"></div>
+      <p class="tagline" style="font-size:20px; letter-spacing:4px;">Report<span class="dot">.</span>&nbsp;Track<span class="dot">.</span>&nbsp;Resolve<span class="dot">.</span></p>
+      <p class="lead">Team Vibranium — SIH 2026 Internal Hackathon</p>
+      <div style="margin-top: 20px;">
+        <p class="muted small" style="margin-bottom: 8px;">Hosted demo live at:</p>
+        <p style="font-weight: 700; color: var(--saffron); font-size: 17px;">https://innoveo-civic.vercel.app</p>
+      </div>
+      <div class="qr-box">SCAN QR<br>FOR LIVE DEMO</div>
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <a class="btn" href="https://innoveo-civic.vercel.app" target="_blank" rel="noopener">Open Live Demo</a>
+        <button class="btn green" id="restartBtn" type="button">Restart Presentation</button>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ============ NAVIGATION ============ -->
+<div class="controls">
+  <button class="nav-btn" id="prevBtn" type="button" aria-label="Previous slide">&larr;</button>
+  <div class="dots" id="dots"></div>
+  <button class="nav-btn" id="nextBtn" type="button" aria-label="Next slide">&rarr;</button>
+</div>
+<div id="counter">1 / 12</div>
+<div id="hint">Use &larr; &rarr; / Space / Home / End</div>
+
+<script>
+  (function () {
+    var slides = Array.prototype.slice.call(document.querySelectorAll('.slide'));
+    var dotsWrap = document.getElementById('dots');
+    var counter = document.getElementById('counter');
+    var progress = document.getElementById('progress');
+    var prevBtn = document.getElementById('prevBtn');
+    var nextBtn = document.getElementById('nextBtn');
+    var restartBtn = document.getElementById('restartBtn');
+    var total = slides.length;
+    var current = 0;
+
+    slides.forEach(function (_, i) {
+      var d = document.createElement('button');
+      d.type = 'button';
+      d.className = 'dot';
+      d.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+      d.addEventListener('click', function () { go(i); });
+      dotsWrap.appendChild(d);
+    });
+    var dots = Array.prototype.slice.call(dotsWrap.children);
+
+    function go(i) {
+      if (i < 0 || i >= total || i === current) return;
+      var dir = i > current ? 1 : -1;
+      var old = slides[current];
+      old.classList.remove('active');
+      if (dir === 1) old.classList.add('prev');
+      var next = slides[i];
+      next.classList.remove('prev');
+      next.classList.add('active');
+      current = i;
+      updateUI();
+      var t = setTimeout(function () { old.classList.remove('prev'); clearTimeout(t); }, 500);
+    }
+
+    function updateUI() {
+      dots.forEach(function (d, i) { d.classList.toggle('active', i === current); });
+      counter.textContent = (current + 1) + ' / ' + total;
+      progress.style.width = ((current + 1) / total * 100) + '%';
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+    }
+
+    function next() { go(current + 1); }
+    function prev() { go(current - 1); }
+
+    prevBtn.addEventListener('click', prev);
+    nextBtn.addEventListener('click', next);
+    if (restartBtn) restartBtn.addEventListener('click', function () { go(0); });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); next(); }
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); prev(); }
+      else if (e.key === 'Home') { e.preventDefault(); go(0); }
+      else if (e.key === 'End') { e.preventDefault(); go(total - 1); }
+    });
+
+    updateUI();
+  })();
+</script>
+
+</body>
+</html>

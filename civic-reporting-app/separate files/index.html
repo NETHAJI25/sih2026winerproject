@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Civic Issue Dashboard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Sidebar -->
+  <div class="sidebar">
+    <h2>INNOINDIA</h2>
+    <ul>
+      <li>Dashboard</li>
+      <li>Complaints</li>
+      <li>Analytics</li>
+      <li>Settings</li>
+      <li>History</li>
+    </ul>
+  </div>
+
+  <!-- Main Content -->
+  <div class="main">
+    <div class="topbar">Civic Issue Dashboard</div>
+
+    <!-- Dashboard Cards -->
+    <div class="cards">
+      <div class="card"><h3>Total Issues</h3><p id="total-issues">0</p></div>
+      <div class="card"><h3>Pending</h3><p id="pending-issues">0</p></div>
+      <div class="card"><h3>Resolved</h3><p id="resolved-issues">0</p></div>
+      <div class="card"><h3>In Progress</h3><p id="progress-issues">0</p></div>
+    </div>
+
+    <!-- Complaints Table -->
+    <table>
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Issue</th>
+          <th>Officer Assigned</th>
+          <th>Status</th>
+          <th>Location</th>
+          <th>Date</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody id="complaints-table"></tbody>
+    </table>
+
+    <!-- Chart -->
+    <div class="chart-container">
+      <canvas id="issuesChart"></canvas>
+    </div>
+  </div>
+
+  <!-- JS Scripts -->
+  <script type="module" src="app.js"></script>
+</body>
+</html>

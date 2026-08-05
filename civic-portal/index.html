@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>InnoIndia — Civic Issue Reporting & Resolution</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="container topbar-in">
+      <div class="brand">
+        <span class="logo">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6M9 10h.01M15 10h.01"/>
+          </svg>
+        </span>
+        <span>InnoIndia</span>
+      </div>
+      <div class="nav-actions">
+        <a class="btn btn-ghost btn-sm" href="civilian.html">Citizen Portal</a>
+        <a class="btn btn-green btn-sm" href="government.html">Government Portal</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="container hero-in">
+      <div class="tricolor-bar"><span></span><span></span><span></span></div>
+      <h1>Report. Track. <span class="accent">Resolve.</span></h1>
+      <p>A crowdsourced civic issue reporting and resolution system that connects citizens directly with their municipal government. Snap a photo, drop a pin, and watch your city fix it.</p>
+      <div style="display:flex;gap:12px;margin-top:24px;flex-wrap:wrap">
+        <a href="civilian.html" class="btn btn-primary">Report an Issue</a>
+        <a href="government.html" class="btn btn-ghost">Officer Login</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS STRIP -->
+  <div class="container" style="margin-top:-28px;position:relative;z-index:5">
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-icon bg-saffron">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V7l7-4 7 4v14"/></svg>
+        </div>
+        <div><div class="stat-value" id="sTotal">—</div><div class="stat-label">Total Issues Logged</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon bg-blue">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>
+        </div>
+        <div><div class="stat-value" id="sPending">—</div><div class="stat-label">Pending</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon bg-red">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
+        </div>
+        <div><div class="stat-value" id="sProgress">—</div><div class="stat-label">In Progress</div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon bg-green">
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>
+        </div>
+        <div><div class="stat-value" id="sResolved">—</div><div class="stat-label">Resolved</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PORTALS -->
+  <div class="container">
+    <div class="portal-grid">
+      <div class="portal-card">
+        <div class="ic bg-saffron">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        </div>
+        <h3>Citizen Portal</h3>
+        <p>Report potholes, garbage, broken lights, water leaks and more. Add a photo and your GPS location, track your issue in real time, and get notified when the city resolves it.</p>
+        <a href="civilian.html" class="btn btn-primary btn-block">Open Citizen Portal</a>
+      </div>
+      <div class="portal-card">
+        <div class="ic bg-green">
+          <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="M9 12l2 2 4-4"/></svg>
+        </div>
+        <h3>Government Portal</h3>
+        <p>Municipal officers see every citizen report on one dashboard with live analytics. Assign departments, update status, add notes, and resolve issues with full transparency.</p>
+        <a href="government.html" class="btn btn-green btn-block">Open Government Portal</a>
+      </div>
+    </div>
+
+    <!-- FEATURES -->
+    <h2 class="section-title">Why InnoIndia</h2>
+    <div class="feature-row">
+      <div class="feature">
+        <div class="fi" style="color:#F97316">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+        <b>Photo + GPS Reports</b>
+        <p>Capture the issue with an image and your exact location for faster routing to the right department.</p>
+      </div>
+      <div class="feature">
+        <div class="fi" style="color:#0A1F44">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+        </div>
+        <b>AI Category Suggestion</b>
+        <p>Smart auto-categorization of issues so reports reach the right department instantly.</p>
+      </div>
+      <div class="feature">
+        <div class="fi" style="color:#16a34a">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        </div>
+        <b>Live Status Tracking</b>
+        <p>Pending, In Progress, Resolved — a transparent timeline on every single citizen report.</p>
+      </div>
+      <div class="feature">
+        <div class="fi" style="color:#3b82f6">
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        </div>
+        <b>Analytics Dashboard</b>
+        <p>Municipal officers get live statistics on issue distribution, workload and resolution rates.</p>
+      </div>
+    </div>
+
+    <!-- ABOUT -->
+    <h2 class="section-title">Built for Smart India</h2>
+    <div class="card" style="display:flex;gap:18px;align-items:center;flex-wrap:wrap">
+      <div style="flex:1;min-width:260px">
+        <p style="color:var(--muted);font-size:14.5px">
+          InnoIndia aligns with the <b>Swachh Bharat Mission</b> and <b>Smart Cities Mission</b> by giving every citizen a direct, transparent channel to their government — and giving municipalities the structured, geotagged data they need to act fast. Fully offline-capable, ready for real-world deployment.
+        </p>
+        <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap">
+          <a href="presentation.html" class="btn btn-outline btn-sm">Open Presentation</a>
+        </div>
+      </div>
+      <div class="tricolor-bar" style="width:180px;height:8px;flex-shrink:0"><span></span><span></span><span></span></div>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <div class="container">
+      <b>InnoIndia</b> — Civic Issue Reporting & Resolution System<br>
+      Team Vibranium | SRM Institute of Science and Technology, Ramapuram | Smart India Hackathon 2026
+    </div>
+  </footer>
+
+  <script src="data.js"></script>
+  <script>
+    function refreshStats(){
+      const s = CivicData.getStats();
+      document.getElementById('sTotal').textContent = s.total;
+      document.getElementById('sPending').textContent = s.pending;
+      document.getElementById('sProgress').textContent = s.progress;
+      document.getElementById('sResolved').textContent = s.resolved;
+    }
+    refreshStats();
+  </script>
+</body>
+</html>

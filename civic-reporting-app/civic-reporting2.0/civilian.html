@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Civilian Portal</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-database.js"></script>
+  <script src="app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Civilian Portal</h1>
+    <div id="authSection">
+      <input type="email" id="civilianEmail" placeholder="Email">
+      <input type="password" id="civilianPassword" placeholder="Password">
+      <button onclick="signupCivilian()">Sign Up</button>
+      <button onclick="loginCivilian()">Login</button>
+    </div>
+
+    <div id="civilianDashboard" style="display:none;">
+      <h2>Report an Issue</h2>
+      <input type="text" id="issueTitle" placeholder="Title">
+      <textarea id="issueDesc" placeholder="Description"></textarea>
+      <select id="issueCategory">
+        <option>Road</option>
+        <option>Water</option>
+        <option>Electricity</option>
+        <option>Other</option>
+      </select>
+      <input type="text" id="issueLocation" placeholder="Location">
+      <button onclick="submitIssue()">Submit Issue</button>
+
+      <h2>My Reports</h2>
+      <ul id="civilianReports"></ul>
+    </div>
+  </div>
+  <script src="civilian.js"></script>
+</body>
+</html>
