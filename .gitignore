@@ -1,2 +1,7 @@
 .vercel
 eval_details.xlsx
+nul
+node_modules
+dist
+.env
+*.log

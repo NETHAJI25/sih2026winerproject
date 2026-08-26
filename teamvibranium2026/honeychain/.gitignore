@@ -1,0 +1,15 @@
+node_modules/
+.env
+dist/
+build/
+__pycache__/
+*.pyc
+.venv/
+hardhat/artifacts/
+hardhat/cache/
+.dart_tool/
+.flutter-plugins*
+ios/Pods/
+android/.gradle/
+*.log
+seed/data/demo.json

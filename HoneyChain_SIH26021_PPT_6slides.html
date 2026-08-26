@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <title>HoneyChain — SIH26021 PPT (6 Slides)</title>
+  <style>
+    body { font-family: 'Segoe UI', Arial, sans-serif; margin:0; background: #fff;}
+    .deck { width:100vw; height:100vh; overflow: auto; }
+    .slide {width: 900px; margin: 40px auto 60px auto; min-height:460px; background: #fff;
+      border: 4px solid #ffd700; border-radius: 24px;
+      padding: 48px 60px; box-shadow: 0 4px 32px #0001; box-sizing: border-box;
+      color: #212121; font-size: 25px; position: relative;}
+    h1, h2 { margin-top: 0; color:#e5a900;}
+    .subtitle {color:#666; font-size: 1.2em; line-height:1.3;}
+    .source {color: #8a6e00; font-size: 0.90em; margin-top:20px;}
+    .accent {color: #ffba00; font-weight:700;}
+    .img-placeholder {height:140px; background: #ffeca6; color:#b29600;
+        display:flex;align-items:center;justify-content:center;
+        border:2px dashed #e5a900;font-size:18px;margin:26px 0 26px 0;border-radius:9px;}
+    .small { font-size: 0.85em; }
+    .team { display: flex; flex-wrap: wrap; gap: 2.5em; margin-top: 1em;}
+    .team-card { background: #fffbe7; border-radius: 10px; border: 1.4px solid #facd58;
+        padding: 1em 1.2em; width: 220px; font-size: 1em;}
+    .timeline { margin-top:24px;}
+    .timeline li {margin-bottom:10px;}
+    .footer { position:absolute;bottom:22px;width:99%;text-align:center;font-size:18px;color:#bbb;}
+    @media (max-width: 1100px) { .slide {width:98vw;padding:18px;margin:4vw 1vw;}}
+    @media (max-width: 700px) { .slide {font-size:18px;min-height:unset;}}
+  </style>
+</head>
+<body>
+<div class="deck">
+
+<!-- 1. Title -->
+<div class="slide">
+  <h1>HoneyChain — Blockchain Traceability & Smart Beekeeping</h1>
+  <div class="subtitle">
+    Team Vibranium | SIH26021 | SRM IST Chennai<br>
+    <span class="accent">Problem Statement:</span> “Honey Chain: A blockchain-based system for honey traceability and smart beekeeping management”<br>
+    <span class="small">Team ID: 118892 | nethajiramesh25@gmail.com | +91-877864603</span>
+    <div class="img-placeholder">[Hex honeycomb background pattern]</div>
+  </div>
+  <div class="footer">Slide 1/6</div>
+</div>
+
+<!-- 2. The Problem (quantified) -->
+<div class="slide">
+  <h2>#2 Honey Exporter — #1 Trust Risk</h2>
+  <div>
+    India exported <span class="accent">$206M</span> honey last year but faces increasing rejections in EU/US due to adulteration.<br>
+    Honest beekeepers get commodity price — ₹700 crore premium lost due to no product provenance.
+  </div>
+  <ul>
+    <li>CSE found “77% retail honey adulterated” (2021)</li>
+    <li>Rejected US: 430 tons (2022) <span class="small">(APEDA, PIB)</span></li>
+  </ul>
+  <div class="source">CSE, APEDA, DGFT stats</div>
+  <div class="footer">Slide 2/6</div>
+</div>
+
+<!-- 3. Existing system & gap / Proposed Solution (merged) -->
+<div class="slide">
+  <h2>From Bees to Blockchain: Filling the Gap</h2>
+  <div>
+    <b>Existing:</b> Madhukranti portal tracks beekeepers/colonies.<br>
+    <b>Gap:</b> Adulteration risk after harvest. No jar-level traceability.<br>
+    <b>Our Solution:</b> Farm-to-jar digital identity, blockchain-backed, instantly verifiable via QR.
+  </div>
+  <div class="img-placeholder">[Madhukranti screenshot + QR code demo art]</div>
+  <div class="footer">Slide 3/6</div>
+</div>
+
+<!-- 4. Innovation & Architecture — V2 Flow -->
+<div class="slide">
+  <h2>How It Works — 5-Step V2 Flow</h2>
+  <ol style="font-size:22px;line-height:1.35">
+    <li><b>Farmer:</b> geotagged photo + farmerWeight (42kg) → Batch B-1042 created → pickup alert to lab</li>
+    <li><b>Driver:</b> auto-allocated via geo, vehicle scale confirms 41.8kg → on-chain transfer</li>
+    <li><b>Lab:</b> received 41.6kg → wastage 3.6 + pure 38kg logged; cert + tester photo uploaded</li>
+    <li><b>Packer:</b> received 37.9kg → mints 500 jars → QR = hc.in/b/B-1042 (only packer can mint)</li>
+    <li><b>Consumer:</b> scans QR → sees farmer photo, driver, lab cert, packer — physics-checked, flagged if 42→55kg</li>
+  </ol>
+  <div class="small" style="margin-top:10px;color:#8a6e00">DB: farmer_weight / lab_* / packer_* | Chain: BatchCreated→Custody×3→Quality→JarsMinted | AI flags impossible gains</div>
+  <div class="footer">Slide 4/6</div>
+</div>
+
+<!-- 5. Impact & Team -->
+<div class="slide">
+  <h2>Impact & Team</h2>
+  <ul>
+    <li>₹2–3k/year uplift per beekeeper (NBHM est.)</li>
+    <li>“Hero batch” B-1042 → full lineage proof in 1 scan</li>
+    <li>Women FPO focus; direct NBHM/KVIC rollout path</li>
+  </ul>
+  <div class="team">
+    <div class="team-card"><b>R. Nethaji</b><br>TL, AI/full-stack</div>
+    <div class="team-card"><b>Devraj Senthil</b><br>Mobile dev</div>
+    <div class="team-card"><b>Kavya</b><br>Research/PPT</div>
+    <div class="team-card"><b>Nisha</b><br>Q&A/validation</div>
+    <div class="team-card"><b>Pavithra</b><br>Design/PPT</div>
+    <div class="team-card"><b>Nabira</b><br>Outreach/QA</div>
+  </div>
+  <div class="footer">Slide 5/6</div>
+</div>
+
+<!-- 6. Timeline & Ask -->
+<div class="slide">
+  <h2>Timeline & The Ask</h2>
+  <ul class="timeline">
+    <li><b>Pilot:</b> 90 days, 1 FPO, all modules</li>
+    <li><b>District:</b> 12 months, 5+ districts</li>
+    <li><b>Scale:</b> Year 2 onwards, NBHM/NAFED/KVIC affiliates</li>
+  </ul>
+  <b>Ask:</b> Assign pilot FPO, CBRTI/KVIC support!<br>
+  <div class="footer">Slide 6/6</div>
+</div>
+
+</div>
+</body>
+</html>
