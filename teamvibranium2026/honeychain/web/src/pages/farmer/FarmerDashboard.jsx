@@ -1,4 +1,6 @@
 import { useState } from 'react'
+import { rtbCreateBatch } from '../../lib/rtb'
+import jsPDF from 'jspdf'
 
 const pal = { honey: '#F5A623', dark: '#1A1A1A', bg: '#FAF7F0' }
 
@@ -253,16 +255,24 @@ export default function FarmerDashboard(){
                 <div className="mt-3 text-xs text-stone-500">GPS auto-captured • photo hash on-chain, bulk hash off-chain</div>
               </div>
               {!saved?(
-                <button onClick={()=>setSaved(true)} className="mt-4 w-full rounded-full py-3 font-bold text-white" style={{ background: pal.honey }}>Submit Batch → pickup alert to Lab</button>
+                <button onClick={async()=>{
+                  const batch={ id:`B-${Date.now().toString(36).toUpperCase()}`, flora, beeSpecies:bee, weightKg:weight, farmerWeight:weight, harvestDate:date, apiary:apiaries.find(a=>a.id===apiary)?.name||'Apiary', geo:apiaries.find(a=>a.id===apiary)?.gps||'', photoHash:'local', status:'created', farmer:{name:'Ravi Kumar',story:'Tiruvallur mustard fields'} }
+                  await rtbCreateBatch(batch); setSaved(true)
+                }} className="mt-4 w-full rounded-full py-3 font-bold text-white" style={{ background: pal.honey }}>Submit Batch → RTDB direct (pickup alert to Lab)</button>
               ):(
-                <div className="mt-4 rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-center"><div className="text-sm font-bold text-emerald-700">Saved, auto-sync when online</div><div className="text-xs text-stone-500">Batch queued locally • will POST /batches on reconnect</div></div>
+                <div className="mt-4 rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-center"><div className="text-sm font-bold text-emerald-700">Saved to Firebase RTDB</div><div className="text-xs text-stone-500">Direct to https://sih2026-b9ef7-default-rtdb.firebaseio.com/batches — visible in app instantly</div></div>
               )}
               <div className="mt-3 flex justify-between"><button onClick={()=>{setSaved(false);setStep(4)}} className="text-sm font-semibold text-stone-600">Back to edit</button><button onClick={()=>{setSaved(false);setStep(1)}} className="text-sm font-semibold" style={{ color: pal.honey }}>New batch</button></div>
             </section>
           )}
           </>)}
           {tab==='batches' && (<section className="mt-6 rounded-2xl bg-white border p-4"><h3 className="font-bold">My Batches</h3><div className="mt-3 space-y-2">{[{id:'B-1042',w:'42.0 kg',s:'Verified',c:'green'},{id:'B-1043',w:'18.5 kg',s:'At Lab',c:'blue'},{id:'B-1044',w:'22.0 kg',s:'Pending Sync',c:'grey'}].map(b=><div key={b.id} className="flex items-center gap-3 rounded-xl border p-3"><img src={`https://picsum.photos/seed/${b.id}/80/80`} className="h-12 w-12 rounded-lg object-cover border"/><div className="flex-1"><div className="text-sm font-bold">{b.id} • {b.w}</div><div className="text-xs text-stone-500">2026-08-26 • Moringa</div></div><span className={`text-xs font-bold px-2 py-1 rounded-full border ${b.c==='green'?'bg-emerald-50 text-emerald-700':b.c==='blue'?'bg-sky-50 text-sky-700':'bg-stone-100 text-stone-600'}`}>{b.s}</span></div>)}</div></section>)}
-          {tab==='reports' && (<section className="mt-6 rounded-2xl bg-white border p-4"><h3 className="font-bold">Reports & Certificates</h3><div className="mt-3 space-y-2">{['B-1042 Passed 2026-08-20','B-1040 Passed 2026-08-12'].map(r=><div key={r} className="flex items-center justify-between rounded-xl border p-3"><span className="text-sm">{r}</span><button className="rounded-full bg-[#1A1A1A] text-white text-xs font-bold px-3 py-1.5">Download PDF</button></div>)}</div></section>)}
+          {tab==='reports' && (<section className="mt-6 rounded-2xl bg-white border p-4"><h3 className="font-bold">Reports & Certificates</h3><div className="mt-3 space-y-2">{['B-1042 Passed 2026-08-20','B-1040 Passed 2026-08-12'].map(r=>{
+            const download=()=>{
+              const doc=new jsPDF(); doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.text('HoneyChain — Harvest Certificate',10,15); doc.setFontSize(11); doc.setFont('helvetica','normal'); doc.text(r,10,25); doc.text('Farmer: Ravi Kumar — Tiruvallur',10,35); doc.text('Status: Lab PASS — NMR verified pure',10,45); doc.text('Blockchain: Polygon Amoy — tx anchored',10,55); doc.text('Downloaded from Farmer Portal /reports',10,65); doc.save(`Certificate-${r.split(' ')[0]}.pdf`)
+            }
+            return <div key={r} className="flex items-center justify-between rounded-xl border p-3"><span className="text-sm">{r}</span><button onClick={download} className="rounded-full bg-[#1A1A1A] text-white text-xs font-bold px-3 py-1.5 hover:bg-black">Download PDF ↓</button></div>
+          })}</div></section>)}
           {tab==='alerts' && (<section className="mt-6 rounded-2xl bg-white border p-4"><h3 className="font-bold">Alerts</h3><div className="mt-3 space-y-2">{[{t:'Varroa risk',d:'Inspect brood frames'},{t:'Yield forecast 22kg',d:'Harvest in 4 days'},{t:'Lab pickup pending',d:'B-1042 schedule'}].map(a=><div key={a.t} className="rounded-xl border p-3"><div className="text-sm font-bold">{a.t}</div><div className="text-xs text-stone-500">{a.d}</div></div>)}</div></section>)}
 
           <div className="mt-6 text-[11px] text-stone-400">HoneyChain Farmer Portal • Offline-first • Tailwind warm palette</div>
