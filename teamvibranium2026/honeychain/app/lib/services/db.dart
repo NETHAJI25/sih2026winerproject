@@ -1,5 +1,5 @@
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+import 'package:sqflite/sqflite.dart' hide Batch;
 
 import '../models/batch.dart';
 import '../models/hive.dart';

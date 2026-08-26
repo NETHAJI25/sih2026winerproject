@@ -11,45 +11,71 @@ class SyncException implements Exception {
 }
 
 class ApiClient {
-  static String baseUrl = 'http://10.0.2.2:4000';
+  static String baseUrl = 'https://sih2026-b9ef7-default-rtdb.firebaseio.com';
   static const Duration timeoutDuration = Duration(seconds: 10);
 
   static Future<List<Map<String, dynamic>>> syncBatches(
     List<Map<String, dynamic>> payloads,
   ) async {
     if (payloads.isEmpty) return [];
-    final uri = Uri.parse('$baseUrl/api/batches');
-    final response = await http
-        .post(
-          uri,
-          headers: {'Content-Type': 'application/json'},
-          body: jsonEncode({'batches': payloads}),
-        )
-        .timeout(timeoutDuration);
-    if (response.statusCode < 200 || response.statusCode >= 300) {
-      throw SyncException('Server responded HTTP ${response.statusCode}');
+    final List<Map<String, dynamic>> inserted = [];
+    for (final p in payloads) {
+      final id =
+          p['clientBatchId'] ??
+          p['id'] ??
+          'B-${DateTime.now().millisecondsSinceEpoch}';
+      final uri = Uri.parse('$baseUrl/batches/$id.json');
+      final body = {
+        ...p,
+        'id': id,
+        'status': 'created',
+        'syncedAt': DateTime.now().toIso8601String(),
+      };
+      final r = await http
+          .put(
+            uri,
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode(body),
+          )
+          .timeout(timeoutDuration);
+      if (r.statusCode < 200 || r.statusCode >= 300)
+        throw SyncException('RTDB PUT ${r.statusCode} for $id');
+      inserted.add({
+        ...body,
+        'txHash': '0xRTDB${id.hashCode.toRadixString(16)}',
+      });
+      await http
+          .put(
+            Uri.parse('$baseUrl/transfers/$id/init.json'),
+            headers: {'Content-Type': 'application/json'},
+            body: jsonEncode({
+              'batchId': id,
+              'weightKg': p['weightKg'],
+              'ts': DateTime.now().millisecondsSinceEpoch,
+              'txHash': '0xRTDB',
+            }),
+          )
+          .timeout(timeoutDuration);
     }
-    final decoded = jsonDecode(response.body);
-    if (decoded is! Map<String, dynamic>) {
-      throw SyncException('Malformed sync response');
-    }
-    final inserted = decoded['inserted'];
-    if (inserted is! List) {
-      throw SyncException('Missing inserted[] in response');
-    }
-    return inserted.whereType<Map<String, dynamic>>().toList();
+    return inserted;
   }
 
-  static Future<Map<String, dynamic>> getPublicBatch(int id) async {
-    final uri = Uri.parse('$baseUrl/api/public/batches/$id');
-    final response = await http.get(uri).timeout(timeoutDuration);
-    if (response.statusCode != 200) {
-      throw SyncException('HTTP ${response.statusCode}');
-    }
-    final decoded = jsonDecode(response.body);
-    if (decoded is! Map<String, dynamic>) {
-      throw SyncException('Malformed batch response');
-    }
+  static Future<Map<String, dynamic>> getPublicBatch(dynamic id) async {
+    final uri = Uri.parse('$baseUrl/batches/$id.json');
+    final r = await http.get(uri).timeout(timeoutDuration);
+    if (r.statusCode != 200) throw SyncException('HTTP ${r.statusCode}');
+    final decoded = jsonDecode(r.body);
+    if (decoded == null) throw SyncException('Batch $id not found in RTDB');
+    if (decoded is! Map<String, dynamic>)
+      throw SyncException('Malformed batch');
     return decoded;
+  }
+
+  static Future<Map<String, dynamic>?> getBatchDirect(String id) async {
+    final uri = Uri.parse('$baseUrl/batches/$id.json');
+    final r = await http.get(uri).timeout(timeoutDuration);
+    if (r.statusCode != 200) return null;
+    final d = jsonDecode(r.body);
+    return d is Map<String, dynamic> ? d : null;
   }
 }
