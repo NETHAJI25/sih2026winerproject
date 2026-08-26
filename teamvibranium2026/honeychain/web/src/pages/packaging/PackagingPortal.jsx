@@ -112,7 +112,8 @@ export default function PackagingPortal(){
   const handleGenerate=()=>{
     if(!confirmedWeight || !bottleCount || parseInt(bottleCount,10)<=0){ pushToast('Confirm weight and bottle count first'); return }
     if(weightDiff && Math.abs(weightDiff.pct)>6){ pushToast('Weight anomaly >6% — review before generating codes'); return }
-    const origin = typeof window !== 'undefined' ? window.location.origin : 'http://127.0.0.1:5173'
+    const isLocal = typeof window !== 'undefined' && (window.location.hostname==='localhost' || window.location.hostname==='127.0.0.1')
+    const origin = isLocal ? 'https://web-mocha-three-89.vercel.app' : (typeof window !== 'undefined' ? window.location.origin : 'https://web-mocha-three-89.vercel.app')
     const lot = Date.now().toString(36)
     const payload = {
       batchId: sel.id,
@@ -127,7 +128,7 @@ export default function PackagingPortal(){
       qrData: `${origin}/verify/${sel.id}?lot=${lot}&exp=${expiry}`,
     }
     setGenerated(payload)
-    pushToast(`QR locked for ${sel.id} — scan from any device → /verify/${sel.id}`)
+    pushToast(`QR locked for ${sel.id} — scan from any device → ${payload.qrData}`)
   }
 
   const handleDownload=()=>{
@@ -392,7 +393,7 @@ export default function PackagingPortal(){
                         <div className="mt-3 flex items-center gap-3 rounded-xl bg-stone-50 p-2.5 border">
                           <div className="shrink-0 scale-[0.62] origin-left -my-2 -ml-1">{generated ? <QRCodeSVG value={generated.qrData} size={118} /> : <QrPlaceholder/>}</div>
                           <div className="min-w-0 flex-1">
-                            <p className="text-[11px] font-black uppercase tracking-widest" style={{color:DARK}}>Scan to verify — any phone</p><p className="font-mono text-[11px] leading-tight text-stone-500 break-all">{generated? generated.qrData : `${typeof window!=='undefined'?window.location.origin:''}/verify/${sel.id}?lot=…`}</p>
+                            <p className="text-[11px] font-black uppercase tracking-widest" style={{color:DARK}}>Scan to verify — any phone</p><p className="font-mono text-[11px] leading-tight text-stone-500 break-all">{generated? generated.qrData : `https://web-mocha-three-89.vercel.app/verify/${sel.id}?lot=…`}</p>
                             <div className="mt-1 scale-[0.72] origin-left"><BarcodePlaceholder/></div>
                           </div>
                         </div>
