@@ -13,10 +13,10 @@ class Actor {
   Map<String, dynamic> toJson() => {'name': name, 'phone': phone, 'role': role};
 
   factory Actor.fromJson(Map<String, dynamic> json) => Actor(
-    name: (json['name'] as String?) ?? '',
-    phone: (json['phone'] as String?) ?? '',
-    role: (json['role'] as String?) ?? 'beekeeper',
-  );
+        name: (json['name'] as String?) ?? '',
+        phone: (json['phone'] as String?) ?? '',
+        role: (json['role'] as String?) ?? 'beekeeper',
+      );
 }
 
 class AuthProvider extends ChangeNotifier {
@@ -30,8 +30,16 @@ class AuthProvider extends ChangeNotifier {
     _restore();
   }
 
-  Future<void> login(String phone) async {
-    _actor = Actor(name: 'Ravi Kumar', phone: phone, role: 'beekeeper');
+  Future<void> login(String phone, {String role = 'beekeeper'}) async {
+    final names = {
+      'beekeeper': 'Ravi Kumar',
+      'transporter': 'Arjun Singh',
+      'lab': 'Dr. S. Kulkarni',
+      'packer': 'AmberPack',
+      'admin': 'KVIC Admin',
+      'customer': 'Customer'
+    };
+    _actor = Actor(name: names[role] ?? 'User', phone: phone, role: role);
     await _persist();
     notifyListeners();
   }

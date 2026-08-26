@@ -14,6 +14,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _phoneController = TextEditingController();
+  String _role = 'beekeeper';
   bool _busy = false;
 
   @override
@@ -26,11 +27,10 @@ class _LoginScreenState extends State<LoginScreen> {
     final phone = _phoneController.text.trim();
     if (phone.isEmpty || _busy) return;
     setState(() => _busy = true);
-    await context.read<AuthProvider>().login(phone);
+    await context.read<AuthProvider>().login(phone, role: _role);
     if (!mounted) return;
-    Navigator.of(
-      context,
-    ).pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen()));
+    Navigator.of(context)
+        .pushReplacement(MaterialPageRoute(builder: (_) => const HomeScreen()));
   }
 
   @override
@@ -60,6 +60,29 @@ class _LoginScreenState extends State<LoginScreen> {
                   style: Theme.of(context).textTheme.bodyMedium,
                 ),
                 const SizedBox(height: 48),
+                DropdownButtonFormField<String>(
+                    value: _role,
+                    decoration: const InputDecoration(
+                        labelText: 'Login as', border: OutlineInputBorder()),
+                    items: const [
+                      DropdownMenuItem(
+                          value: 'beekeeper',
+                          child: Text('Farmer — Beekeeper')),
+                      DropdownMenuItem(
+                          value: 'transporter', child: Text('Transport')),
+                      DropdownMenuItem(
+                          value: 'lab', child: Text('Lab — Testing')),
+                      DropdownMenuItem(
+                          value: 'packer', child: Text('Packaging')),
+                      DropdownMenuItem(
+                          value: 'admin', child: Text('Admin / KVIC')),
+                      DropdownMenuItem(
+                          value: 'customer', child: Text('Customer')),
+                    ],
+                    onChanged: (v) {
+                      if (v != null) setState(() => _role = v);
+                    }),
+                const SizedBox(height: 12),
                 TextField(
                   controller: _phoneController,
                   keyboardType: TextInputType.phone,

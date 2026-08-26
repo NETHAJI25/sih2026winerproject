@@ -3,11 +3,17 @@ import 'package:provider/provider.dart';
 
 import '../l10n/strings.dart';
 import '../main.dart';
+import '../providers/auth_provider.dart';
 import '../providers/sync_provider.dart';
 import 'batches_screen.dart';
 import 'hives_screen.dart';
 import 'settings_screen.dart';
 import 'sync_screen.dart';
+import 'roles/transport_screen.dart';
+import 'roles/lab_screen.dart';
+import 'roles/packaging_screen.dart';
+import 'roles/admin_screen.dart';
+import 'roles/customer_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -29,6 +35,12 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final role = context.watch<AuthProvider>().actor?.role ?? 'beekeeper';
+    if (role == 'transporter') return const TransportScreen();
+    if (role == 'lab') return const LabScreen();
+    if (role == 'packer') return const PackagingScreen();
+    if (role == 'admin') return const AdminScreen();
+    if (role == 'customer') return const CustomerScreen();
     return ValueListenableBuilder<String>(
       valueListenable: localeNotifier,
       builder: (context, locale, _) {
