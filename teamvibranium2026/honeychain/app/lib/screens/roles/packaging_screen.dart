@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../../providers/auth_provider.dart';
 
 class PackagingScreen extends StatefulWidget {
   const PackagingScreen({super.key});
@@ -24,7 +26,12 @@ class _PackagingScreenState extends State<PackagingScreen> {
   @override
   Widget build(BuildContext c) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Packaging — QR')),
+      appBar: AppBar(
+        title: const Text('Packaging — QR'),
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => c.read<AuthProvider>().setRole('beekeeper')),
+      ),
       body: FutureBuilder(
         future: _incoming(),
         builder: (c, s) {

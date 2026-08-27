@@ -5,7 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'l10n/strings.dart';
 import 'providers/auth_provider.dart';
 import 'providers/sync_provider.dart';
-import 'screens/login_screen.dart';
+import 'screens/home_screen.dart';
 
 final ValueNotifier<String> localeNotifier = ValueNotifier<String>('en');
 
@@ -51,7 +51,7 @@ class _HoneyChainAppState extends State<HoneyChainApp> {
           useMaterial3: true,
           colorScheme: ColorScheme.fromSeed(seedColor: const Color(0xFFB45309)),
         ),
-        home: const LoginScreen(),
+        home: const HomeScreen(),
       ),
     );
   }

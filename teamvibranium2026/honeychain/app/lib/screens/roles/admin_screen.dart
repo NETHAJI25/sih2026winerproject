@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../../providers/auth_provider.dart';
 
 class AdminScreen extends StatelessWidget {
   const AdminScreen({super.key});
@@ -19,7 +21,12 @@ class AdminScreen extends StatelessWidget {
   @override
   Widget build(BuildContext c) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Admin / KVIC — Fraud & Heatmap')),
+      appBar: AppBar(
+        title: const Text('Admin / KVIC — Fraud & Heatmap'),
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () => c.read<AuthProvider>().setRole('beekeeper')),
+      ),
       body: FutureBuilder(
         future: _stats(),
         builder: (c, s) {

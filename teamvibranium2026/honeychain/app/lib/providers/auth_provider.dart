@@ -51,6 +51,32 @@ class AuthProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  Future<void> setRole(String role) async {
+    final names = {
+      'beekeeper': 'Ravi Kumar',
+      'transporter': 'Arjun Singh',
+      'lab': 'Dr. S. Kulkarni',
+      'packer': 'AmberPack',
+      'admin': 'KVIC Admin',
+      'customer': 'Customer'
+    };
+    _actor = Actor(
+        name: names[role] ?? 'User',
+        phone: _actor?.phone ?? '0000000000',
+        role: role);
+    await _persist();
+    notifyListeners();
+  }
+
+  Future<void> ensureDefault() async {
+    if (_actor == null) {
+      _actor = const Actor(
+          name: 'Ravi Kumar', phone: '0000000000', role: 'beekeeper');
+      await _persist();
+      notifyListeners();
+    }
+  }
+
   Future<void> _persist() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString(_prefsKey, jsonEncode(_actor!.toJson()));

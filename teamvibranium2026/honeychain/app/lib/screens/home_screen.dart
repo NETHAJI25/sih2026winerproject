@@ -29,7 +29,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) context.read<SyncProvider>().refreshQueuedCount();
+      if (mounted) {
+        context.read<AuthProvider>().ensureDefault();
+        context.read<SyncProvider>().refreshQueuedCount();
+      }
     });
   }
 
@@ -54,6 +57,22 @@ class _HomeScreenState extends State<HomeScreen> {
           appBar: AppBar(
             title: Text(S.t(locale, 'appName')),
             actions: [
+              Consumer<AuthProvider>(builder: (c, auth, _) {
+                return PopupMenuButton<String>(
+                  icon: const Icon(Icons.switch_account),
+                  tooltip: 'Switch role (no login)',
+                  onSelected: (v) => context.read<AuthProvider>().setRole(v),
+                  itemBuilder: (c) => const [
+                    PopupMenuItem(value: 'beekeeper', child: Text('Farmer')),
+                    PopupMenuItem(
+                        value: 'transporter', child: Text('Transport')),
+                    PopupMenuItem(value: 'lab', child: Text('Lab')),
+                    PopupMenuItem(value: 'packer', child: Text('Packaging')),
+                    PopupMenuItem(value: 'admin', child: Text('Admin')),
+                    PopupMenuItem(value: 'customer', child: Text('Customer')),
+                  ],
+                );
+              }),
               Padding(
                 padding: const EdgeInsets.only(right: 12),
                 child: Consumer<SyncProvider>(

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../../providers/auth_provider.dart';
 
 class LabScreen extends StatefulWidget {
   const LabScreen({super.key});
@@ -24,7 +26,12 @@ class _LabScreenState extends State<LabScreen> {
   @override
   Widget build(BuildContext c) {
     return Scaffold(
-        appBar: AppBar(title: const Text('Lab — Testing (NMR/PASS)')),
+        appBar: AppBar(
+          title: const Text('Lab — Testing (NMR/PASS)'),
+          leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () => c.read<AuthProvider>().setRole('beekeeper')),
+        ),
         body: FutureBuilder(
             future: _queue(),
             builder: (c, s) {

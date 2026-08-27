@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../../providers/auth_provider.dart';
 
 class TransportScreen extends StatelessWidget {
   const TransportScreen({super.key});
@@ -18,7 +20,20 @@ class TransportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text('Transport — Pickups')),
+        appBar: AppBar(
+          title: const Text('Transport — Pickups'),
+          leading: IconButton(
+              icon: const Icon(Icons.arrow_back),
+              onPressed: () =>
+                  context.read<AuthProvider>().setRole('beekeeper')),
+          actions: [
+            IconButton(
+                icon: const Icon(Icons.switch_account),
+                onPressed: () =>
+                    context.read<AuthProvider>().setRole('beekeeper'),
+                tooltip: 'Back to Farmer (no login)')
+          ],
+        ),
         body: FutureBuilder(
             future: _pickups(),
             builder: (c, s) {
