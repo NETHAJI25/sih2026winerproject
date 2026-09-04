@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react'
 import { QRCodeSVG } from 'qrcode.react'
+import { rtbListBatches } from '../../lib/rtb'
 
 const ACCENT = '#F5A623'
 const DARK = '#452A07'
@@ -68,9 +69,23 @@ function addMonths(dateStr, months){
 }
 
 export default function PackagingPortal(){
+  const [incomingBatches, setIncomingBatches] = useState(PASS_BATCHES)
   const [tab, setTab] = useState('dashboard')
   const [selected, setSelected] = useState(PASS_BATCHES[0].id)
-  const sel = useMemo(()=> PASS_BATCHES.find(b=>b.id===selected)||PASS_BATCHES[0],[selected])
+  const sel = useMemo(()=> incomingBatches.find(b=>b.id===selected)||incomingBatches[0],[selected, incomingBatches])
+  useEffect(()=>{
+    (async()=>{
+      try{
+        const all=await rtbListBatches();
+        const incoming=all.filter(b=> b.status==='tested').map(b=>({
+          id:b.id, flora:b.floraType||b.flora||'Mustard', honeyType:(b.floraType||b.flora||'Mustard')+' honey',
+          farmer:b.farmer?.name||'Farmer', harvestDate:b.harvestDate||'', labWeight:b.labPureWeight||b.labReceivedWeight||b.weightKg||0,
+          transportWeight:b.farmerWeight||b.weightKg||0, district:typeof b.apiary==='string'?b.apiary:(b.apiary?.name||'Tiruvallur, TN'), floraColor:'#F5A623'
+        }));
+        if(incoming.length) setIncomingBatches(prev=>{ const ids=new Set(prev.map(p=>p.id)); const add=incoming.filter(x=>!ids.has(x.id)); return [...add, ...prev].slice(0,20) });
+      }catch(e){}
+    })();
+  },[])
   const [confirmedWeight, setConfirmedWeight] = useState(String(sel.labWeight))
   const [bottleSize, setBottleSize] = useState('250ml')
   const sizeObj = useMemo(()=> SIZES.find(s=>s.id===bottleSize),[bottleSize])
@@ -105,7 +120,7 @@ export default function PackagingPortal(){
     return `${cw.toFixed(1)}kg → ${bottleCount}×${sizeObj.grams}g = ${(packed/1000).toFixed(2)}kg packed · ${Math.abs(diff).toFixed(0)}g ${diff>=0?'remaining':'overfill'} · ~${perBottle}g/bottle`
   },[confirmedWeight, bottleCount, sizeObj, totalPackedGrams])
 
-  const incomingToday = PASS_BATCHES.filter(b=> b.harvestDate >= '2026-02-18').length
+  const incomingToday = incomingBatches.filter(b=> b.harvestDate >= '2026-02-18').length
   const bottlesWeek = useMemo(()=> PASS_BATCHES.reduce((a,b)=> a + Math.floor(b.labWeight*1000/250),0),[])
   const ready = PASS_BATCHES.length - dispatched.length
 

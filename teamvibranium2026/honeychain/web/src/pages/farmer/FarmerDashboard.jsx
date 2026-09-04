@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { rtbCreateBatch } from '../../lib/rtb'
+import { useState, useEffect } from 'react'
+import { rtbCreateBatch, rtbListBatches } from '../../lib/rtb'
 import jsPDF from 'jspdf'
+import MobileSensorDemo from '../../components/MobileSensorDemo'
 
 const pal = { honey: '#F5A623', dark: '#1A1A1A', bg: '#FAF7F0' }
 
@@ -30,6 +31,8 @@ const flora = [
   { n:'Neem', c:'#8DB580', f:'#C7E0B8', img:'/flora/neem.jpg' },
   { n:'Sunflower', c:'#FFC300', f:'#FFE27A', img:'/flora/sunflower.jpg' },
 ]
+async function farmDisease(){ const AI=import.meta.env.VITE_AI_URL||'http://localhost:8001'; try{ const r=await fetch(AI+'/disease?month=7&temp_c=30&humidity_pct=80'); const j=r.ok?await r.json():null; alert(j?'Disease '+j.risk+' '+j.score:'Demo: high 80 varroa')}catch{ alert('Demo: high 80')} }
+async function farmProd(){ const AI=import.meta.env.VITE_AI_URL||'http://localhost:8001'; try{ const r=await fetch(AI+'/productivity?flora=Mustard&boxes=10&season=flow&health_score=85'); const j=r.ok?await r.json():null; alert(j?'Productivity '+j.estimateKg+'kg':'Demo: 56.9kg')}catch{ alert('Demo: 56.9kg')} }
 const initialApiaries = [
   { id:1, name:'North Grove — Tiruvallur', hives:12, gps:'13.132, 79.972' },
   { id:2, name:'River Edge — Poondi', hives:8, gps:'13.185, 80.061' },
@@ -48,6 +51,8 @@ export default function FarmerDashboard(){
   const [weight,setWeight]=useState(12.5)
   const [date,setDate]=useState('2026-08-26')
   const [saved,setSaved]=useState(false)
+  const [reports,setReports]=useState([])
+  useEffect(()=>{ if(tab!=='reports') return; (async()=>{ try{ const all=await rtbListBatches(); const r=all.filter(b=> b.status==='tested'||b.status==='packaged').map(b=> `${b.id} ${b.status==='tested'?'Passed':b.status} ${new Date(b.createdAt||Date.now()).toISOString().slice(0,10)}`); if(r.length) setReports(r); }catch(e){} })(); },[tab])
   const harvested = 342
   const verified = 28
   const pending = 3
@@ -113,6 +118,33 @@ export default function FarmerDashboard(){
               <div className="mt-1 flex items-center gap-2"><span className={`text-2xl font-black ${pending>0?'text-amber-600':''}`}>{pending}</span>{pending>0&&<span className="text-xs font-bold text-amber-700 bg-white border border-amber-200 px-2 py-0.5 rounded-full">Action needed</span>}</div>
               <div className="mt-2 text-xs text-stone-600">{pending>0?'Amber — will auto-upload when online':'All batches synced'}</div>
             </div>
+          </div>
+
+          <MobileSensorDemo />
+          <div className="mt-6 rounded-2xl border-2 border-amber-300 bg-amber-50 p-4">
+            <div className="flex flex-wrap items-center justify-between gap-2"><h2 className="font-black text-sm">🐝 IoT + AI — Dedicated Prediction Pages (Judge Demo)</h2><a href="/hive-health" className="rounded-full bg-[#1A1A1A] px-4 py-1.5 text-xs font-bold text-white hover:bg-black">Open AI Pages →</a></div>
+            <p className="mt-1 text-xs text-stone-600">RTDB live · AI RandomForest 12k Kaggle · temp/humidity/weight/sound every 12s · image ML via Gemini Vision</p>
+            <div className="mt-3 grid gap-3 md:grid-cols-3">
+              <a href="/hive-health" className="rounded-xl bg-white border p-4 hover:shadow-md transition text-left">
+                <p className="text-xs font-bold uppercase tracking-widest text-emerald-600">Hive Health — IoT + ML</p>
+                <p className="mt-1 text-lg font-black">32–37°C Healthy</p>
+                <p className="text-xs text-stone-500">Brood zone 32-37°C · Hum 50-75% · Sound 58-68 dB → healthy/attention/critical</p>
+                <p className="mt-2 text-xs font-bold text-amber-600">Live demo → /hive-health</p>
+              </a>
+              <a href="/disease-detect" className="rounded-xl bg-white border p-4 hover:shadow-md transition text-left">
+                <p className="text-xs font-bold uppercase tracking-widest text-red-600">Disease Forecast — IMAGE ML</p>
+                <p className="mt-1 text-lg font-black">Varroa · Foulbrood</p>
+                <p className="text-xs text-stone-500">Upload bee/hive photo → Gemini Vision + seasonal /disease → high/medium/low + solution</p>
+                <p className="mt-2 text-xs font-bold text-amber-600">Image ML → /disease-detect</p>
+              </a>
+              <a href="/productivity" className="rounded-xl bg-white border p-4 hover:shadow-md transition text-left">
+                <p className="text-xs font-bold uppercase tracking-widest text-sky-600">Productivity — AI</p>
+                <p className="mt-1 text-lg font-black">22 kg Forecast</p>
+                <p className="text-xs text-stone-500">Flora × season × health → ML+rule blended · 2.2 kg/box · Mustard flow season · R² 0.984</p>
+                <p className="mt-2 text-xs font-bold text-amber-600">Forecast → /productivity</p>
+              </a>
+            </div>
+            <div className="mt-3 flex flex-wrap gap-2 text-[11px]"><span className="rounded-full bg-white border px-2.5 py-1 font-bold">HIVE-KVIC-001 34.5°C</span><span className="rounded-full bg-white border px-2.5 py-1 font-bold">Varroa 2 mites low risk</span><span className="rounded-full bg-white border px-2.5 py-1 font-bold">Yield 22kg /10 boxes</span><span className="rounded-full bg-emerald-500 text-white px-2.5 py-1 font-bold">● Dedicated AI pages + console</span></div>
           </div>
 
           <div className="mt-6 rounded-2xl bg-white border p-4">
@@ -267,7 +299,7 @@ export default function FarmerDashboard(){
           )}
           </>)}
           {tab==='batches' && (<section className="mt-6 rounded-2xl bg-white border p-4"><h3 className="font-bold">My Batches</h3><div className="mt-3 space-y-2">{[{id:'B-1042',w:'42.0 kg',s:'Verified',c:'green'},{id:'B-1043',w:'18.5 kg',s:'At Lab',c:'blue'},{id:'B-1044',w:'22.0 kg',s:'Pending Sync',c:'grey'}].map(b=><div key={b.id} className="flex items-center gap-3 rounded-xl border p-3"><img src={`https://picsum.photos/seed/${b.id}/80/80`} className="h-12 w-12 rounded-lg object-cover border"/><div className="flex-1"><div className="text-sm font-bold">{b.id} • {b.w}</div><div className="text-xs text-stone-500">2026-08-26 • Moringa</div></div><span className={`text-xs font-bold px-2 py-1 rounded-full border ${b.c==='green'?'bg-emerald-50 text-emerald-700':b.c==='blue'?'bg-sky-50 text-sky-700':'bg-stone-100 text-stone-600'}`}>{b.s}</span></div>)}</div></section>)}
-          {tab==='reports' && (<section className="mt-6 rounded-2xl bg-white border p-4"><h3 className="font-bold">Reports & Certificates</h3><div className="mt-3 space-y-2">{['B-1042 Passed 2026-08-20','B-1040 Passed 2026-08-12'].map(r=>{
+          {tab==='reports' && (<section className="mt-6 rounded-2xl bg-white border p-4"><h3 className="font-bold">Reports & Certificates</h3><div className="mt-3 space-y-2">{(reports.length?reports:['B-1042 Passed 2026-08-20','B-1040 Passed 2026-08-12']).map(r=>{
             const download=()=>{
               const doc=new jsPDF(); doc.setFont('helvetica','bold'); doc.setFontSize(14); doc.text('HoneyChain — Harvest Certificate',10,15); doc.setFontSize(11); doc.setFont('helvetica','normal'); doc.text(r,10,25); doc.text('Farmer: Ravi Kumar — Tiruvallur',10,35); doc.text('Status: Lab PASS — NMR verified pure',10,45); doc.text('Blockchain: Polygon Amoy — tx anchored',10,55); doc.text('Downloaded from Farmer Portal /reports',10,65); doc.save(`Certificate-${r.split(' ')[0]}.pdf`)
             }

@@ -16,6 +16,9 @@ import LabPortal from './pages/lab/LabPortal'
 import PackagingPortal from './pages/packaging/PackagingPortal'
 import AdminPortal from './pages/admin/AdminPortal'
 import CustomerHome from './pages/customer/CustomerHome'
+import HiveHealth from './pages/ai/HiveHealth'
+import DiseaseDetect from './pages/ai/DiseaseDetect'
+import Productivity from './pages/ai/Productivity'
 
 function NotFound() {
   return (
@@ -41,6 +44,12 @@ export default function App() {
       <Route path="/concept1" element={<HomeConcept1 />} />
       <Route path="/concept2" element={<HomeConcept2 />} />
       <Route path="/verify/:batchId" element={<ConsumerPortal />} />
+      <Route path="/hive-health" element={<HiveHealth />} />
+      <Route path="/ai/hive-health" element={<HiveHealth />} />
+      <Route path="/disease-detect" element={<DiseaseDetect />} />
+      <Route path="/ai/disease-detect" element={<DiseaseDetect />} />
+      <Route path="/productivity" element={<Productivity />} />
+      <Route path="/ai/productivity" element={<Productivity />} />
       <Route path="/customer" element={<CustomerHome />} />
       <Route path="/customer/report" element={<CustomerHome />} />
       <Route path="/farmer/*" element={<FarmerDashboard />} />

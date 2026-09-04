@@ -297,28 +297,68 @@ export default function LabPortal(){
 
             {tab==='queue' && (
               <div className="space-y-6 animate-fade-up">
-                <div className="rounded-2xl border bg-white shadow-sm overflow-hidden">
-                  <div className="flex items-center justify-between border-b bg-amber-50/60 px-4 py-3">
-                    <p className="text-sm font-bold" style={{color:DARK}}>Testing Queue — FIFO (oldest first)</p>
-                    <span className="rounded-full bg-white px-2.5 py-1 text-xs font-bold text-stone-600 border">{queue.length} batches</span>
+                <div className="grid gap-6 lg:grid-cols-3">
+                  <div className="lg:col-span-2 rounded-2xl border bg-white shadow-sm overflow-hidden h-fit">
+                    <div className="flex items-center justify-between border-b bg-amber-50/60 px-4 py-3">
+                      <p className="text-sm font-bold" style={{color:DARK}}>Testing Queue — FIFO (oldest first)</p>
+                      <span className="rounded-full bg-white px-2.5 py-1 text-xs font-bold text-stone-600 border">{queue.length} batches</span>
+                    </div>
+                    <div className="divide-y">
+                      {queue.map(b=>{
+                        const age=daysAgo(b.arrivedAt)
+                        const active=b.id===selected
+                        return (
+                          <button key={b.id} onClick={()=>setSelected(b.id)} className={`flex w-full items-center gap-3 px-4 py-3 text-left transition ${active?'bg-amber-50': 'hover:bg-stone-50'}`}>
+                            <div className="flex h-10 w-10 items-center justify-center rounded-xl border bg-white text-xs font-black" style={{color:DARK}}>{b.id.slice(2)}</div>
+                            <div className="min-w-0 flex-1">
+                              <div className="flex flex-wrap items-center gap-2"><span className="text-sm font-black" style={{color:DARK}}>{b.id}</span><span className="rounded-full bg-stone-900 px-2 py-0.5 text-[11px] font-bold text-white">{b.flora}</span><span className="hidden text-xs text-stone-500 md:inline">· {b.farmer} · {b.village}</span></div>
+                              <div className="flex gap-2 text-xs text-stone-500"><span>Transport {b.transportWeight} kg</span><span>·</span><span>Harvest {b.harvestDate}</span><span className="hidden md:inline">·</span><span className="hidden md:inline">Arrived {new Date(b.arrivedAt).toLocaleDateString()}</span></div>
+                            </div>
+                            <div className="hidden items-center gap-2 md:flex"><span className={`rounded-full px-2.5 py-1 text-xs font-bold ${age>7?'bg-red-50 text-red-700 border border-red-200': age>4?'bg-amber-100 text-amber-800':'bg-emerald-50 text-emerald-700'}`}>{age}d in lab</span><span className={`rounded-full px-3 py-1.5 text-xs font-bold ${active?'text-white shadow':'border bg-white text-stone-700'}`} style={active?{background:ACCENT}:{}}>{active?'Testing →':'Open'}</span></div>
+                            <span className="md:hidden text-stone-400"><Icon d="M9 18l6-6-6-6" size={18}/></span>
+                          </button>
+                        )
+                      })}
+                      {queue.length===0 && <div className="p-10 text-center text-sm text-stone-500">Queue empty — all batches processed.</div>}
+                    </div>
                   </div>
-                  <div className="divide-y">
-                    {queue.map(b=>{
-                      const age=daysAgo(b.arrivedAt)
-                      const active=b.id===selected
-                      return (
-                        <button key={b.id} onClick={()=>setSelected(b.id)} className={`flex w-full items-center gap-3 px-4 py-3 text-left transition ${active?'bg-amber-50': 'hover:bg-stone-50'}`}>
-                          <div className="flex h-10 w-10 items-center justify-center rounded-xl border bg-white text-xs font-black" style={{color:DARK}}>{b.id.slice(2)}</div>
-                          <div className="min-w-0 flex-1">
-                            <div className="flex flex-wrap items-center gap-2"><span className="text-sm font-black" style={{color:DARK}}>{b.id}</span><span className="rounded-full bg-stone-900 px-2 py-0.5 text-[11px] font-bold text-white">{b.flora}</span><span className="hidden text-xs text-stone-500 md:inline">· {b.farmer} · {b.village}</span></div>
-                            <div className="flex gap-2 text-xs text-stone-500"><span>Transport {b.transportWeight} kg</span><span>·</span><span>Harvest {b.harvestDate}</span><span className="hidden md:inline">·</span><span className="hidden md:inline">Arrived {new Date(b.arrivedAt).toLocaleDateString()}</span></div>
-                          </div>
-                          <div className="hidden items-center gap-2 md:flex"><span className={`rounded-full px-2.5 py-1 text-xs font-bold ${age>7?'bg-red-50 text-red-700 border border-red-200': age>4?'bg-amber-100 text-amber-800':'bg-emerald-50 text-emerald-700'}`}>{age}d in lab</span><span className={`rounded-full px-3 py-1.5 text-xs font-bold ${active?'text-white shadow':'border bg-white text-stone-700'}`} style={active?{background:ACCENT}:{}}>{active?'Testing →':'Open'}</span></div>
-                          <span className="md:hidden text-stone-400"><Icon d="M9 18l6-6-6-6" size={18}/></span>
-                        </button>
-                      )
-                    })}
-                    {queue.length===0 && <div className="p-10 text-center text-sm text-stone-500">Queue empty — all batches processed.</div>}
+                  <div className="lg:col-span-1 space-y-4">
+                    <div className="rounded-2xl border bg-white shadow-sm overflow-hidden">
+                      <div className="flex items-center justify-between border-b bg-stone-900 px-4 py-3">
+                        <p className="text-sm font-bold text-white">New Orders — Latest 3</p>
+                        <span className="rounded-full bg-white/15 px-2.5 py-1 text-xs font-bold text-white border border-white/20">newest first</span>
+                      </div>
+                      <div className="divide-y">
+                        {[...queue].slice().reverse().slice(0,3).map(b=>{
+                          const age=daysAgo(b.arrivedAt)
+                          const active=b.id===selected
+                          return (
+                            <button key={'new-'+b.id} onClick={()=>setSelected(b.id)} className={`flex w-full items-center gap-3 px-4 py-3 text-left transition ${active?'bg-amber-50':'hover:bg-stone-50'}`}>
+                              <div className="flex h-9 w-9 items-center justify-center rounded-xl border bg-white text-xs font-black shrink-0" style={{color:DARK}}>{b.id.slice(2)}</div>
+                              <div className="min-w-0 flex-1">
+                                <div className="flex items-center gap-1.5"><span className="text-sm font-black" style={{color:DARK}}>{b.id}</span><span className="rounded-full bg-amber-400 px-1.5 py-0.5 text-[10px] font-bold text-white">NEW</span></div>
+                                <p className="truncate text-xs text-stone-500">{b.flora} · {b.farmer}</p>
+                              </div>
+                              <span className={`rounded-full px-2 py-1 text-xs font-bold shrink-0 ${age>7?'bg-red-50 text-red-700':age>4?'bg-amber-100 text-amber-800':'bg-emerald-50 text-emerald-700'}`}>{age}d</span>
+                            </button>
+                          )
+                        })}
+                        {queue.length===0 && <div className="p-6 text-center text-sm text-stone-500">No new orders.</div>}
+                      </div>
+                      <div className="bg-amber-50 px-4 py-3">
+                        <p className="text-xs font-bold uppercase tracking-widest text-amber-700">IoT + AI Live</p>
+                        <p className="mt-1 text-xs leading-relaxed text-stone-600">Hive temp 32-37°C healthy · varroa/foulbrood AI forecast · yield estimate</p>
+                        <a href="/console/hives" className="mt-2 inline-flex w-full items-center justify-center rounded-full bg-[#452A07] px-4 py-2 text-xs font-black text-white hover:bg-black">Open HiveMonitor → IoT+AI</a>
+                        <div className="mt-2 flex gap-2">
+                          <a href="http://localhost:8001/disease?month=7&temp_c=30&humidity_pct=80" target="_blank" rel="noreferrer" className="flex-1 rounded-full border bg-white px-2 py-1 text-center text-[11px] font-bold text-stone-700">Disease API</a>
+                          <a href="http://localhost:8001/productivity?flora=Mustard&boxes=10&season=flow&health_score=85" target="_blank" rel="noreferrer" className="flex-1 rounded-full border bg-white px-2 py-1 text-center text-[11px] font-bold text-stone-700">Yield API</a>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="rounded-2xl border-2 border-amber-200 bg-amber-50 p-4">
+                      <p className="text-xs font-black uppercase tracking-widest text-amber-700">Why two panels?</p>
+                      <p className="mt-1 text-xs leading-relaxed text-stone-600">Left = FIFO lab order (oldest first, fair). Right = New Orders (latest 3, newest first) for triage. Both drive same React state <span className="font-mono font-bold">selected</span>.</p>
+                    </div>
                   </div>
                 </div>
 

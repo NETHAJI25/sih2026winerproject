@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from 'recharts';
+import MobileSensorDemo from '../../components/MobileSensorDemo';
 
 const BASE = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 const AI = import.meta.env.VITE_AI_URL || 'http://localhost:8001';
@@ -100,6 +101,8 @@ export default function HiveMonitor() {
           </ResponsiveContainer>
         </div>
       </section>
+
+      <MobileSensorDemo onData={(d)=>{ setHives(h=> h.some(x=>x.hive_code==='HIVE-KVIC-MOBILE')?h:[...h,{hive_code:'HIVE-KVIC-MOBILE', status:'mobile-demo', flora_source:'Mobile Climate', bee_species:'Apis demo', last_reading:{temp_c:d.temp_c,humidity_pct:d.humidity_pct,weight_kg:d.weight_kg}}]); setSelected('HIVE-KVIC-MOBILE'); }} />
 
       <section className="rounded-2xl border border-amber-100 bg-white p-5 shadow-sm">
         <h2 className="text-sm font-bold uppercase tracking-wide text-stone-500">All hives</h2>

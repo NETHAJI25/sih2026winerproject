@@ -14,12 +14,14 @@ const ROLES=[
   {t:'Packaging Units',d:'QR per bottle locked to verified batch data',to:'/packaging',img:'https://images.unsplash.com/photo-1587132137056-bfbf0166836e?q=80&w=600&auto=format&fit=crop'},
   {t:'Government / KVIC',d:'Extend Madhukranti to retail with fraud and heatmap insights',to:'/admin',img:'https://images.unsplash.com/photo-1529107386315-e1a2ed48a620?q=80&w=600&auto=format&fit=crop'},
 ]
+async function tryDisease(){ const AI=import.meta.env.VITE_AI_URL||'http://localhost:8001'; try{ const r=await fetch(AI+'/disease?month=7&temp_c=30&humidity_pct=80'); const j=r.ok?await r.json():null; alert(j?'Disease '+j.risk+' '+j.score+' — '+(j.drivers||''): 'Demo: high 80 — varroa peak + humidity')}catch{ alert('Demo: high 80 — Try /console/hives live')} }
+async function tryProd(){ const AI=import.meta.env.VITE_AI_URL||'http://localhost:8001'; try{ const r=await fetch(AI+'/productivity?flora=Mustard&boxes=10&season=flow&health_score=85'); const j=r.ok?await r.json():null; alert(j?'Productivity '+j.estimateKg+'kg for 10 boxes Mustard':'Demo: 56.9kg for 10 boxes')}catch{ alert('Demo: 56.9kg — Flora x season x health')} }
 export default function Home(){
   return (<div className="min-h-screen bg-[#FAF7F0] text-[#1A1A1A] selection:bg-[#F5A623]/30">
     <nav className="sticky top-0 z-40 border-b border-stone-200 bg-white/90 backdrop-blur">
       <div className="mx-auto flex max-w-[1280px] items-center justify-between px-6 py-3">
         <span className="flex items-center gap-2 text-lg font-black tracking-tight"><span className="flex h-8 w-8 items-center justify-center rounded-lg bg-[#F5A623]">⬡</span>HoneyChain</span>
-        <div className="hidden gap-6 text-sm font-medium text-stone-600 md:flex"><a href="#how" className="hover:text-[#1A1A1A]">How it works</a><a href="#roles" className="hover:text-[#1A1A1A]">Who uses</a><Link to="/console" className="hover:text-[#1A1A1A]">Console</Link></div>
+        <div className="hidden gap-6 text-sm font-medium text-stone-600 md:flex"><a href="#how" className="hover:text-[#1A1A1A]">How it works</a><a href="#roles" className="hover:text-[#1A1A1A]">Who uses</a><Link to="/console/hives" className="hover:text-[#1A1A1A]">Hive Monitor</Link><Link to="/console" className="hover:text-[#1A1A1A]">Console</Link></div>
         <Link to="/verify/B-1042" className="rounded-full bg-[#F5A623] px-5 py-2 text-sm font-bold text-white hover:bg-[#C77D1F]">Verify a Jar</Link>
       </div>
     </nav>
@@ -75,6 +77,25 @@ export default function Home(){
         {[['1,247 kg','Honey Traced'],['312','Batches Verified'],['89','Beekeepers Onboarded'],['6','States Covered']].map(([v,l])=>(
           <div key={l} className="text-center"><p className="font-serif text-3xl font-black">{v}</p><p className="mt-1 text-xs font-bold uppercase tracking-widest text-stone-500">{l}</p><p className="text-xs italic text-stone-400">Pilot Data</p></div>
         ))}
+      </div>
+    </section>
+
+    <section className="mx-auto max-w-[1280px] px-6 py-12">
+      <div className="rounded-2xl border-2 border-amber-200 bg-amber-50 p-6 md:p-8">
+        <div className="flex flex-wrap items-start justify-between gap-4">
+          <div>
+            <p className="text-xs font-black uppercase tracking-widest text-amber-700">New · IoT + AI Smart Beekeeping — Dedicated AI Pages</p>
+            <h2 className="mt-1 font-serif text-2xl font-black">Hive Monitoring · Disease Detection · Yield Forecast</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-relaxed text-stone-600">IoT sensors stream temp/humidity/weight/sound every 12s to Firebase RTDB. AI RandomForest (12k real Kaggle rows, 95.56% acc) predicts colony health, varroa/foulbrood risk and harvest forecast — now with dedicated live demo pages.</p>
+            <div className="mt-4 flex flex-wrap gap-2 text-xs"><span className="rounded-full bg-white border px-3 py-1 font-bold">HIVE-KVIC-001 34.5°C healthy</span><span className="rounded-full bg-white border px-3 py-1 font-bold">Varroa 2 mites low</span><span className="rounded-full bg-white border px-3 py-1 font-bold">Yield 56.9kg /10 boxes</span></div>
+          </div>
+          <Link to="/hive-health" className="rounded-full bg-[#1A1A1A] px-6 py-3 text-sm font-black text-white hover:bg-black">Open AI Pages →</Link>
+        </div>
+        <div className="mt-6 grid gap-4 md:grid-cols-3 text-sm">
+          <div className="rounded-xl bg-white border p-4"><p className="font-black">🌡️ Hive Health</p><p className="mt-1 text-stone-600">32-37°C brood zone, 50-75% hum, weight & sound → healthy/attention/critical + advice</p><Link to="/hive-health" className="mt-2 inline-block text-xs font-bold text-amber-600">Live demo + ML →</Link><Link to="/console/hives" className="ml-3 mt-2 inline-block text-xs text-stone-400">Console monitor</Link></div>
+          <div className="rounded-xl bg-white border p-4"><p className="font-black">🦠 Disease Forecast — IMAGE ML</p><p className="mt-1 text-stone-600">Upload bee/hive photo → Gemini Vision + seasonal GET /disease → risk & solution</p><Link to="/disease-detect" className="mt-2 inline-block text-xs font-bold text-amber-600">Try image ML →</Link><button onClick={tryDisease} className="ml-3 mt-2 inline-block text-xs text-stone-400">Quick API</button></div>
+          <div className="rounded-xl bg-white border p-4"><p className="font-black">📈 Productivity</p><p className="mt-1 text-stone-600">Flora × season × health → ML+rule blended kg, per-box yield · R² 0.984</p><Link to="/productivity" className="mt-2 inline-block text-xs font-bold text-amber-600">Forecast demo →</Link><button onClick={tryProd} className="ml-3 mt-2 inline-block text-xs text-stone-400">Quick API</button></div>
+        </div>
       </div>
     </section>
 
