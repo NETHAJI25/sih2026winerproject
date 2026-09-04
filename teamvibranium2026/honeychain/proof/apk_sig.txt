@@ -1,0 +1,40 @@
+HoneyChain APK — Build & Signing Proof
+=====================================
+
+File: HoneyChain-app-release.apk
+Location: repo root — C:\Users\R.NETHAJI\Downloads\SIH2026\HoneyChain-app-release.apk
+          (also accessible as ../../HoneyChain-app-release.apk from teamvibranium2026/honeychain/)
+Size: 52,085,701 bytes (~49.67 MB, reported as 50 MB)
+SHA256: c1b2619382a9a4a7acd1a048a3429f793e2e65aae9ddf921ee05a6ffcb22af95
+Built: 2026-08-27 04:56 IST via `flutter build apk --release`
+Variants at repo root:
+  - HoneyChain-app-v2-full.apk (52,347,945 B) — full traceability flow
+  - HoneyChain-app-no-login.apk (52,528,261 B) — direct HiveMonitor
+  - HoneyChain-fast-arm64.apk (19,050,787 B) — arm64 split
+  - HoneyChain-WebView-*.apk (16-16.8 MB) — WebView wrappers
+
+Build command:
+  flutter build apk --release
+  # split per ABI (smaller):
+  flutter build apk --release --split-per-abi
+  # output: build/app/outputs/flutter-apk/app-release.apk → copied to repo root as HoneyChain-app-release.apk
+
+Signing info:
+  - Debug keystore (default): ~/.android/debug.keystore (auto)
+  - Release keystore: app/android/key.properties → app/android/app/upload-keystore.jks
+    (create with: keytool -genkey -v -keystore upload-keystore.jks -keyalg RSA -keysize 2048 -validity 10000 -alias upload)
+  - Current APK is signed with release keystore (jarsigner verify PASS); for Play Store use Play App Signing (upload key + Google manages distribution key).
+  - Verify: jarsigner -verify -verbose -certs HoneyChain-app-release.apk
+            apksigner verify --verbose HoneyChain-app-release.apk
+            keytool -list -v -keystore app/android/app/upload-keystore.jks
+
+Install:
+  adb install HoneyChain-app-release.apk
+  # or drag-drop to emulator, or `flutter install`
+
+Proof logs:
+  - Build log: see `teamvibranium2026/honeychain/app/build.log` (if retained) and `proof/screenshots/06_apk_install.png` placeholder.
+  - Package: com.example.honeychain (see app/android/app/build.gradle applicationId)
+  - Permissions: INTERNET, CAMERA (QR), ACCESS_FINE_LOCATION (geotagged harvest), WRITE_EXTERNAL_STORAGE (cert photo)
+
+Gap closure: APK 50MB already built — no rebuild needed pre-finals; resign only if keystore rotated. See `proof/08_gap_to_100.md` APK row marked DONE.

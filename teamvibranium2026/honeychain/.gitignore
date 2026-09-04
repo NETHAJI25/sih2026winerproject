@@ -13,3 +13,6 @@ ios/Pods/
 android/.gradle/
 *.log
 seed/data/demo.json
+.gemini_key
+.env
+ai/.env

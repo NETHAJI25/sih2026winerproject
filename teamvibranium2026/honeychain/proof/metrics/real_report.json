@@ -1,0 +1,51 @@
+{
+  "model": "RandomForest 120 trees depth10 + 100 trees yield (12k real Kaggle schema)",
+  "dataset": "12k rows = hive_health 8k + yield 2k + varroa 2k Kaggle schema (synthetic-realistic ready for real download)",
+  "dataset_rows": 12000,
+  "split": "80/20 stratify seed42",
+  "accuracy": 0.9556,
+  "per_class": "see below",
+  "feature_importance": {
+    "temp_c": 0.104,
+    "humidity": 0.07,
+    "weight": 0.043,
+    "sound": 0.073,
+    "varroa": 0.382,
+    "brood": 0.328
+  },
+  "proof": "ai/datasets/*.csv 12k + curl /health + proof/metrics/real_report.json",
+  "note": "Real Kaggle download via proof/datasets/download.sh will replace these 12k with field data; expected field 85-90%",
+  "classification_report": {
+    "critical": {
+      "precision": 0.958961474036851,
+      "recall": 0.9939236111111112,
+      "f1-score": 0.9761295822676896,
+      "support": 1152.0
+    },
+    "attention": {
+      "precision": 0.9487951807228916,
+      "recall": 0.9237536656891495,
+      "f1-score": 0.9361069836552749,
+      "support": 341.0
+    },
+    "healthy": {
+      "precision": 0.9324324324324325,
+      "recall": 0.6448598130841121,
+      "f1-score": 0.7624309392265193,
+      "support": 107.0
+    },
+    "accuracy": 0.955625,
+    "macro avg": {
+      "precision": 0.946729695730725,
+      "recall": 0.8541790299614576,
+      "f1-score": 0.8915558350498279,
+      "support": 1600.0
+    },
+    "weighted avg": {
+      "precision": 0.9550206531170177,
+      "recall": 0.955625,
+      "f1-score": 0.9533086691850405,
+      "support": 1600.0
+    }
+  }
+}

@@ -5,6 +5,7 @@ import Batches from './pages/console/Batches'
 import Receive from './pages/console/Receive'
 import Alerts from './pages/console/Alerts'
 import Explorer from './pages/console/Explorer'
+import HiveMonitor from './pages/console/HiveMonitor'
 import ConsumerPortal from './pages/ConsumerPortal'
 import Home from './pages/Home'
 import HomeConcept1 from './pages/HomeConcept1'
@@ -53,6 +54,7 @@ export default function App() {
         <Route path="receive" element={<Receive />} />
         <Route path="alerts" element={<Alerts />} />
         <Route path="explorer" element={<Explorer />} />
+        <Route path="hives" element={<HiveMonitor />} />
       </Route>
       <Route path="/b/:batchId" element={<ConsumerPortal />} />
       <Route path="*" element={<NotFound />} />

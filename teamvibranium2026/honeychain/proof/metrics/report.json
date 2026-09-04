@@ -1,0 +1,40 @@
+{
+  "model": "RandomForest 120 trees depth10 + 100 trees yield",
+  "dataset": "synthetic 2000 rows 6% noise seed42",
+  "split": "80/20",
+  "accuracy": 0.9475,
+  "per_class": {
+    "critical": {
+      "precision": 0.964,
+      "recall": 0.997,
+      "f1": 0.98,
+      "support": 298
+    },
+    "attention": {
+      "precision": 0.881,
+      "recall": 0.949,
+      "f1": 0.914,
+      "support": 78
+    },
+    "healthy": {
+      "precision": 1.0,
+      "recall": 0.333,
+      "f1": 0.5,
+      "support": 24
+    }
+  },
+  "yield": {
+    "MAE_kg": 3.44,
+    "R2": 0.984
+  },
+  "feature_importance": {
+    "varroa": 0.341,
+    "brood": 0.33,
+    "temp_c": 0.116,
+    "sound": 0.084,
+    "humidity": 0.081,
+    "weight": 0.048
+  },
+  "proof": "ai/main.py:_synthetic_kaggle_train curl localhost:8001/health + /colony-health",
+  "next": "real Kaggle ~12k rows expect 85-90% field"
+}

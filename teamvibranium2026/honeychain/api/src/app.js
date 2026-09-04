@@ -9,6 +9,8 @@ const packagesRoutes = require('./routes/packages');
 const alertsRoutes = require('./routes/alerts');
 const chainRoutes = require('./routes/chain');
 const publicRoutes = require('./routes/public');
+const hivesRoutes = require('./routes/hives');
+const telemetryRoutes = require('./routes/telemetry');
 
 const app = express();
 
@@ -25,6 +27,8 @@ app.use('/api/packages', packagesRoutes);
 app.use('/api/alerts', alertsRoutes);
 app.use('/api/chain', chainRoutes);
 app.use('/api/public', publicRoutes);
+app.use('/api/hives', hivesRoutes);
+app.use('/api/telemetry', telemetryRoutes);
 
 app.use((req, res) => res.status(404).json({ error: 'not found' }));
 

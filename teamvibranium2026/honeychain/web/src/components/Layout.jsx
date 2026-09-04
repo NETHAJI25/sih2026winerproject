@@ -4,6 +4,7 @@ import { getAlerts, onModeChange } from '../lib/api'
 
 const NAV = [
   { to: '/console', end: true, label: 'Dashboard', icon: 'dashboard' },
+  { to: '/console/hives', end: false, label: 'Hive Monitor', icon: 'receive' },
   { to: '/console/batches', end: false, label: 'Batches', icon: 'batches' },
   { to: '/console/receive', end: false, label: 'Receive', icon: 'receive' },
   { to: '/console/alerts', end: false, label: 'Alerts', icon: 'alerts', badge: true },

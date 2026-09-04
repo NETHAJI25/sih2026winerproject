@@ -1,0 +1,68 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ai
+  labels:
+    app: honeychain
+    tier: ai
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: honeychain
+      tier: ai
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  template:
+    metadata:
+      labels:
+        app: honeychain
+        tier: ai
+    spec:
+      containers:
+        - name: ai
+          image: honeychain/ai:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8001
+              name: http
+          command: ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8001"]
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: 8001
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          resources:
+            requests:
+              cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: 1000m
+              memory: 1Gi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ai
+  labels:
+    app: honeychain
+    tier: ai
+spec:
+  selector:
+    app: honeychain
+    tier: ai
+  ports:
+    - port: 8001
+      targetPort: 8001
+      name: http
+  type: ClusterIP
