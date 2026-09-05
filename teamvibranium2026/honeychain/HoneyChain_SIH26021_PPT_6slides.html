@@ -43,78 +43,144 @@
   <div class="footer">Slide 1/6</div>
 </div>
 
-<!-- 2. The Problem (quantified) -->
+<!-- 2. Problem & KVIC Challenges -->
 <div class="slide">
-  <h2>#2 Honey Exporter — #1 Trust Risk</h2>
+  <h2>Problem — KVIC Honey Mission Under Trust Risk</h2>
   <div>
-    India exported <span class="accent">$206M</span> honey last year but faces increasing rejections in EU/US due to adulteration.<br>
-    Honest beekeepers get commodity price — ₹700 crore premium lost due to no product provenance.
+    India #2 honey exporter <span class="accent">$206M</span> but 77% retail adulterated (CSE 2021), 430 tons US-rejected (APEDA 2022) — ₹700cr premium lost.
   </div>
-  <ul>
-    <li>CSE found “77% retail honey adulterated” (2021)</li>
-    <li>Rejected US: 430 tons (2022) <span class="small">(APEDA, PIB)</span></li>
+  <div class="small" style="margin-top:8px; background:#fff8e1; border-left:3px solid #F5A623; padding:8px 10px;">
+    <b>KVIC Honey Mission:</b> Bee boxes + extraction kits to rural beekeepers, yet still: <b>counterfeit honey, low consumer trust, weak market linkages, no traceability & no advanced hive management</b> → PS26021 asks integrated <b>Blockchain+AI+IoT</b> ecosystem.
+  </div>
+  <ul class="small" style="margin-top:10px">
+    <li>Authenticity: No jar-level proof → dilution 42kg→55kg undetected</li>
+    <li>Productivity: No hive health / disease early warning → colony loss 30-40%</li>
+    <li>Market: FPO has no QR passport → premium market blocked</li>
   </ul>
-  <div class="source">CSE, APEDA, DGFT stats</div>
-  <div class="footer">Slide 2/6</div>
+  <div class="source">CSE, APEDA, DGFT, KVIC Honey Mission, NBHM</div>
+  <div class="footer">Slide 2/6 — Updated with KVIC gaps + PS 26021 exact text</div>
 </div>
 
-<!-- 3. Existing system & gap / Proposed Solution (merged) -->
+<!-- 3. Solution — Integrated Blockchain + AI + IoT -->
 <div class="slide">
-  <h2>From Bees to Blockchain: Filling the Gap</h2>
+  <h2>HoneyChain — Proposed Integrated Solution</h2>
   <div>
-    <b>Existing:</b> Madhukranti portal tracks beekeepers/colonies.<br>
-    <b>Gap:</b> Adulteration risk after harvest. No jar-level traceability.<br>
-    <b>Our Solution:</b> Farm-to-jar digital identity, blockchain-backed, instantly verifiable via QR.
+    <b>Prototype:</b> Blockchain traceability + QR consumer auth + secure batch tracking — B-1042 hero verified in 1 scan.
   </div>
-  <div class="img-placeholder">[Madhukranti screenshot + QR code demo art]<br><span class="small">→ Replace with proof/screenshots/01_consumer_portal_qr_verify.png before finals</span></div>
-  <div class="small" style="color:#8a6e00">Field trial 50 readings Aug 2026 (33-37°C) validated — see proof/field_trial/RECALIBRATION.md</div>
-  <div class="footer">Slide 3/6 — Updated 2026-09-04: screenshots/README + field_trial DONE</div>
+  <div class="small" style="margin-top:8px; display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+    <div style="background:#f3f8ff; border:1px solid #b6d4ff; border-radius:8px; padding:8px;">
+      <b>🔗 Blockchain + QR</b><br>
+      Polygon Amoy 275L + 7 roles → txHash immutable → QR hc.in/b/B-1042 locked packer-only mint.
+    </div>
+    <div style="background:#fff0f0; border:1px solid #ffb4b4; border-radius:8px; padding:8px;">
+      <b>🤖 IoT + AI Smart Hive</b><br>
+      DHT22 temp/hum + HX711 weight + mic sound → Firebase RTDB 12s → RF 95.56% (varroa/foulbrood, 12k Kaggle).
+    </div>
+    <div style="background:#f0f9f0; border:1px solid #a3d9a3; border-radius:8px; padding:8px;">
+      <b>📱 Mobile BLE Demo</b><br>
+      No hardware? Phone GPS → Open-Meteo climate + BLE scan → HIVE-KVIC-MOBILE demo for judges.
+    </div>
+    <div style="background:#fff8e1; border:1px solid #ffe082; border-radius:8px; padding:8px;">
+      <b>🏘️ KVIC Scale</b><br>
+      Docker 3svc + k8s 5 yamls + Vercel + Offline PWA Flutter → district-wise FPO cluster.
+    </div>
+  </div>
+  <div class="img-placeholder" style="margin-top:12px; font-size:13px; padding:8px;">[QR B-1042 verified + HiveMonitor chart 32-37°C + 10 disease Wiki guide — proof/metrics/real_report.json]<br>Extends Madhukranti registry → retail shelf</div>
+  <div class="footer">Slide 3/6 — Updated with IoT hardware + AI 95.56% + mobile demo</div>
 </div>
 
-<!-- 4. Innovation & Architecture — V2 Flow -->
+<!-- 4. How It Works — 5-Step + IoT Hardware + Architecture -->
 <div class="slide">
-  <h2>How It Works — 5-Step V2 Flow</h2>
-  <ol style="font-size:22px;line-height:1.35">
-    <li><b>Farmer:</b> geotagged photo + farmerWeight (42kg) → Batch B-1042 created → pickup alert to lab</li>
-    <li><b>Driver:</b> auto-allocated via geo, vehicle scale confirms 41.8kg → on-chain transfer</li>
-    <li><b>Lab:</b> received 41.6kg → wastage 3.6 + pure 38kg logged; cert + tester photo uploaded</li>
-    <li><b>Packer:</b> received 37.9kg → mints 500 jars → QR = hc.in/b/B-1042 (only packer can mint)</li>
-    <li><b>Consumer:</b> scans QR → sees farmer photo, driver, lab cert, packer — physics-checked, flagged if 42→55kg</li>
+  <h2>How It Works — 5-Step Farm→Jar + Smart Hive</h2>
+  <ol style="font-size:17px;line-height:1.35">
+    <li><b>Farmer:</b> geo-photo + farmerWeight 42kg → Batch B-1042 → RTDB + Polygon <span style="color:#8a6e00">BatchCreated</span></li>
+    <li><b>Driver:</b> geo-allocated, scale 41.8kg, GPS+seal photo → <span style="color:#8a6e00">Custody Transfer</span> (AI flags >2% gain)</li>
+    <li><b>Lab:</b> got 41.6kg → IS4941 6 params + seal photo + tester pic → <span style="color:#8a6e00">QualityAttached</span> certHash — only PASS → packer</li>
+    <li><b>Packer:</b> got 37.9kg → mints 500 jars QR hc.in/b/B-1042 → <span style="color:#8a6e00">JarsMinted</span> packer-only</li>
+    <li><b>Consumer:</b> scan QR → TrustBadge verified + farm story + lab report + HiveMonitor link — physics 42→55kg flagged</li>
   </ol>
-  <div class="small" style="margin-top:10px;color:#8a6e00">DB: farmer_weight / lab_* / packer_* | Chain: BatchCreated→Custody×3→Quality→JarsMinted | AI flags impossible gains</div>
-  <div class="small" style="color:#8a6e00">HiveMonitor: proof/screenshots/02_hive_monitor_dashboard.png — RTDB 12s tick (see proof/screenshots/README.md)</div>
-  <div class="footer">Slide 4/6 — Updated 2026-09-04: APK 50M built flutter build apk --release</div>
-</div>
-
-<!-- 5. Impact & Team -->
-<div class="slide">
-  <h2>Impact & Team</h2>
-  <ul>
-    <li>₹2–3k/year uplift per beekeeper (NBHM est.)</li>
-    <li>“Hero batch” B-1042 → full lineage proof in 1 scan</li>
-    <li>Women FPO focus; direct NBHM/KVIC rollout path</li>
-  </ul>
-  <div class="team">
-    <div class="team-card"><b>R. Nethaji</b><br>TL, AI/full-stack</div>
-    <div class="team-card"><b>Devraj Senthil</b><br>Mobile dev</div>
-    <div class="team-card"><b>Kavya</b><br>Research/PPT</div>
-    <div class="team-card"><b>Nisha</b><br>Q&A/validation</div>
-    <div class="team-card"><b>Pavithra</b><br>Design/PPT</div>
-    <div class="team-card"><b>Nabira</b><br>Outreach/QA</div>
+  <div class="small" style="margin-top:8px; background:#f7f7f7; border:1px solid #ddd; border-radius:8px; padding:8px; font-size:12px;">
+    <b>IoT Hardware:</b> ESP32 + DHT22 (temp 32-37°C) + humidity 50-75% + HX711 weight + MAX9814 mic (sound 58-68dB) + battery → <b>Firebase RTDB 12s</b> → <b>AI RF 120 trees 95.56% (12k + 47k Kaggle: US honey 1k + bee images 5k + varroa 20k)</b> → <b>HiveMonitor</b> recharts + colony health + disease Varroa/Foulbrood 10 guide + yield ML+rule → /hive-health /disease-detect (Our RF / Gemini) /productivity
+    <br><b>Demo without hive:</b> <span style="color:#8a6e00">MobileSensorDemo 📱</span> — phone GPS → Open-Meteo temp/hum → HIVE-KVIC-MOBILE + BLE scan
   </div>
-  <div class="footer">Slide 5/6</div>
+  <div class="small" style="color:#8a6e00; font-size:11px; margin-top:6px;">DB farmer_weight/lab_*/packer_* | Chain 7 roles mock→live | API /hives/telemetry/ai/health 8001 | Field trial 50 readings validated proof/field_trial</div>
+  <div class="footer">Slide 4/6 — Updated with IoT hardware + mobile demo + AI endpoints + architecture</div>
 </div>
 
-<!-- 6. Timeline & Ask -->
+<!-- 5. Feasibility, Impact & Tech Stack -->
 <div class="slide">
-  <h2>Timeline & The Ask</h2>
-  <ul class="timeline">
-    <li><b>Pilot:</b> 90 days, 1 FPO, all modules</li>
-    <li><b>District:</b> 12 months, 5+ districts</li>
-    <li><b>Scale:</b> Year 2 onwards, NBHM/NAFED/KVIC affiliates</li>
-  </ul>
-  <b>Ask:</b> Assign pilot FPO, CBRTI/KVIC support!<br>
-  <div class="footer">Slide 6/6</div>
+  <h2>Feasibility · Impact · Tech Stack</h2>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:14px;">
+    <div>
+      <b>Feasibility:</b>
+      <ul style="margin:4px 0;">
+        <li>Offline PWA + SQLite → sync when online → works poor internet</li>
+        <li>Polygon role-gated = Fabric permissioning, public verify</li>
+        <li>Simple UI + local language → beekeeper adopts</li>
+        <li>Pilot 1 FPO 90 days → district 5+ → national NBHM scale</li>
+      </ul>
+      <b>Impact:</b>
+      <ul style="margin:4px 0;">
+        <li>Farm→jar traceability, fraud flag 2% gain / 25% loss</li>
+        <li>IoT + AI: varroa/foulbrood early warning 10 disease guide</li>
+        <li>Consumer QR verify → ₹2-3k uplift/beekeeper (NBHM)</li>
+        <li>Women FPO focus; B-1042 hero proof</li>
+      </ul>
+    </div>
+    <div>
+      <b>Tech Stack:</b>
+      <div class="small" style="background:#f0f0ff; border:1px solid #c0c0ff; border-radius:6px; padding:6px; font-size:11px;">
+        Chain: Polygon Amoy 275L, ethers, Hardhat<br>
+        API: Node Express + Firebase RTDB (sih2026-b9ef7) + pg<br>
+        AI: FastAPI RF 120 trees 95.56% 12k + 47k Kaggle<br>
+        IoT: ESP32 DHT22 HX711 mic + Mobile BLE + Open-Meteo<br>
+        Web: React Vite Tailwind recharts PWA, Flutter APK<br>
+        Deploy: Docker 3svc + k8s 5yamls + Vercel<br>
+        <span style="color:#8a6e00">Live: web-mocha-three-89 + 4000 + 8001</span>
+      </div>
+      <b style="margin-top:6px; display:block;">Team:</b>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:6px; font-size:11px; margin-top:4px;">
+        <span style="background:#fffbe7; border:1px solid #facd58; border-radius:6px; padding:4px;"><b>Nethaji</b> TL AI/full-stack</span>
+        <span style="background:#fffbe7; border:1px solid #facd58; border-radius:6px; padding:4px;"><b>Devraj</b> Mobile</span>
+        <span style="background:#fffbe7; border:1px solid #facd58; border-radius:6px; padding:4px;"><b>Kavya/Nisha</b> R&D/Q&A</span>
+        <span style="background:#fffbe7; border:1px solid #facd58; border-radius:6px; padding:4px;"><b>Pavithra/Nabira</b> Design/Outreach</span>
+      </div>
+    </div>
+  </div>
+  <div class="footer">Slide 5/6 — Updated with IoT hardware + stack + feasibility</div>
+</div>
+
+<!-- 6. Research, Proof & Ask -->
+<div class="slide">
+  <h2>Research, Proof & Timeline</h2>
+  <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; font-size:13px;">
+    <div>
+      <b>Research:</b>
+      <ul style="margin:4px 0; font-size:11px;">
+        <li>CSE 77% adulterated, FAO beekeeping, blockchain agrifood</li>
+        <li>Hyperledger vs Polygon, IIoT+ML apiculture</li>
+        <li>Kaggle 47k: US honey 1k + bee images 5k + varroa 20k + hive health 8k</li>
+        <li>Gap: testing/trace/monitoring separate → HoneyChain unified</li>
+      </ul>
+      <b>Proof Dossier (proof/):</b>
+      <div class="small" style="background:#f7f7f7; border:1px solid #ddd; border-radius:6px; padding:6px; font-size:10px;">
+        01_blockchain 02_qr 03_iot 04_ai 95.56% 05_firebase 06_deploy<br>
+        KAGGLE_REAL_PROOF 47k · real_report.json · field_trial 50<br>
+        10 disease Wiki exact + /hive-health /disease-detect toggle Our/Gemini
+      </div>
+    </div>
+    <div>
+      <b>Timeline:</b>
+      <ul class="timeline" style="margin:4px 0; font-size:11px;">
+        <li><b>Pilot:</b> 90 days, 1 FPO, all modules + mobile BLE demo</li>
+        <li><b>District:</b> 12m, 5+ districts, ESP32 field 50 hives</li>
+        <li><b>Scale:</b> Year 2 NBHM/NAFED/KVIC pan-India</li>
+      </ul>
+      <b>Ask:</b> <span style="color:#b47b00">Pilot FPO + CBRTI/KVIC + NBB support</span> — ready to deploy!
+      <div class="small" style="margin-top:6px; color:#8a6e00; font-size:10px;">Live: api 4000 · ai 8001 · RTDB sih2026-b9ef7 · web-mocha-three-89.vercel.app — see proof/00_INDEX.md</div>
+    </div>
+  </div>
+  <div class="footer">Slide 6/6 — Updated with IoT+AI proof + Kaggle + timeline</div>
 </div>
 
 </div>
